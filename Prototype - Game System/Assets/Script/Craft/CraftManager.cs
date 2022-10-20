@@ -84,26 +84,56 @@ public class CraftManager : MonoBehaviour
             }
         }
     }
+    public void RemoveAll()
+    {
+        foreach(Slot slot in craftSlots)
+        {
+            OnClickSlot(slot);
+        }
+    }
     public void OnClickSlot(Slot slot)
     {
-        if(slot.card != null)
+        if (slot.card != null)
         {
+
             GameManager.Instance.ReceiveItem(slot.card.card.itemName);
             slot.card = null;
             cardList[slot.index] = null;
             slot.gameObject.SetActive(false);
             CheckForCreatedRecipes();
+
+        }
+    }
+    public void Craft()
+    {
+        if(resultSlot.card != null)
+        {
+            GameManager.Instance.ReceiveItem(resultSlot.card.card.itemName);
+            resultSlot.card = null;
+            resultSlot.gameObject.SetActive(false);
+            foreach (Slot slot in craftSlots)
+            {
+                if (slot.card != null)
+                {
+                    slot.card = null;
+                    cardList[slot.index] = null;
+                    slot.gameObject.SetActive(false);
+                }
+            }
         }
     }
     public void OnMouseDownItem(Cards card)
     {
         if(currentCard == null)
         {
-            currentCard = card;
-            customCursor.gameObject.SetActive(true);
-            customCursor.sprite = currentCard.GetComponent<Image>().sprite;
-            customCursor.color = currentCard.GetComponent<Image>().color;
-            GameManager.Instance.DecreaseItem(currentCard.card.itemName);
+            if (GameManager.Instance.NumberItem(card.card.itemName) > 0)
+            {
+                currentCard = card;
+                customCursor.gameObject.SetActive(true);
+                customCursor.sprite = currentCard.GetComponent<Image>().sprite;
+                customCursor.color = currentCard.GetComponent<Image>().color;
+                GameManager.Instance.DecreaseItem(currentCard.card.itemName);
+            }
         }
     }    
 }

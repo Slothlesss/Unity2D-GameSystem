@@ -23,6 +23,17 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    public int NumberItem(string nameItem)
+    {
+        for (int i = 0; i < itemCounts.Length; i++)
+        {
+            if (itemCounts[i].name == nameItem)
+            {
+                return itemCounts[i].Count;
+            }
+        }
+        return 0;
+    }
     public void DecreaseItem(string nameItem)
     {
         for (int i = 0; i < itemCounts.Length; i++)
