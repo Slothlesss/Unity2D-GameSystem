@@ -8,16 +8,28 @@ public class InventoryManager : MonoBehaviour
 {
     public Transform Tabs;
     public GridLayoutGroup Grid;
-    public GameObject ItemPrefab;
-    public GameObject CellPrefab;
+    public GameObject SlotLocked;
+    public GameObject SlotFree;
+    public GameObject unlockNoti;
+    public int inventorySize;
+    public int inventoryLockedSize;
+    public bool canExpand = false;
     public bool AddEmptyCells = true;
+    public static InventoryManager Instance;
+    List<GameObject> emptySlots = new List<GameObject>();
 
     private Toggle ActiveTab => Tabs.GetComponentsInChildren<Toggle>().Single(i => i.isOn);
     private void Awake()
     {
-        for(int i = 0; i < 100; i++)
+        for(int i = 0; i < inventorySize; i++)
         {
-            Instantiate(CellPrefab, Grid.transform);
+            emptySlots.Add(Instantiate(SlotFree, Grid.transform));
+            
+        }
+        for (int i = 0; i < inventoryLockedSize; i++)
+        {
+            emptySlots.Add(Instantiate(SlotLocked, Grid.transform));
+
         }
     }
     private void Start()
@@ -34,4 +46,10 @@ public class InventoryManager : MonoBehaviour
                 break;
         }    
     }
+    public bool WantToExpand(bool decision)
+    {
+        canExpand = decision;
+        return decision;
+    }
+
 }
