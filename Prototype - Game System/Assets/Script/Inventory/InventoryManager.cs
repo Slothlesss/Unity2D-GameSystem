@@ -48,7 +48,7 @@ public class InventoryManager : MonoBehaviour
         OnSelectTab(true);
     }
 
-    public void Update()
+    private void Update()
     {
         if (customCursor.gameObject.activeInHierarchy)
         {
