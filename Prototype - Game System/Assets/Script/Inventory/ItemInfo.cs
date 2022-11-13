@@ -14,4 +14,5 @@ public class ItemInfo : ScriptableObject
     public ItemManager.ItemType typeOfItem;
     public ItemManager.Rarity rarity;
 
+
 }

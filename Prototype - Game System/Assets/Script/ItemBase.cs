@@ -14,12 +14,15 @@ public class ItemBase : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Start()
     {
+
         if (item != null)
         {
             img.sprite = item.image;
             img.color = item.color;
             CheckRarity();
         }
+
+
     }
     // Update is called once per frame
     public virtual void Update()
@@ -27,7 +30,39 @@ public class ItemBase : MonoBehaviour
         Start();
     }
 
-    
+    public int SetPriceByRarity()
+    {
+        if (item.rarity == ItemManager.Rarity.Common)
+        {
+            return 1;
+        }
+        else if (item.rarity == ItemManager.Rarity.Uncommon)
+        {
+            return 5;
+        }
+        else if (item.rarity == ItemManager.Rarity.Rare)
+        {
+            return 20;
+        }
+        else if (item.rarity == ItemManager.Rarity.Epic)
+        {
+            return 100;
+        }
+        else if (item.rarity == ItemManager.Rarity.Mythical)
+        {
+            return 500;
+        }
+        else if (item.rarity == ItemManager.Rarity.Legendary)
+        {
+            return 2000;
+        }
+        else if (item.rarity == ItemManager.Rarity.God)
+        {
+            return 10000;
+        }
+        return 0;
+    }
+
 
 
     public void CheckRarity()

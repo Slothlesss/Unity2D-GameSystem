@@ -33,12 +33,20 @@ public class InventoryManager : MonoBehaviour
         Instance = this;
         for(int i = 0; i < inventorySize; i++)
         {
-            emptySlots.Add(Instantiate(SlotFree, Grid.transform));
+            GameObject addSlot = Instantiate(SlotFree, Grid.transform);
+            emptySlots.Add(addSlot);
+            addSlot.GetComponent<Toggle>().group = GetComponentInParent<ToggleGroup>();
+            if (i == 0)
+            {
+                addSlot.GetComponent<Toggle>().isOn = true;
+            }
             
         }
         for (int i = 0; i < inventoryLockedSize; i++)
         {
-            lockSlots.Add(Instantiate(SlotLocked, Grid.transform));
+            GameObject addSlot = Instantiate(SlotLocked, Grid.transform);
+            lockSlots.Add(addSlot); 
+            addSlot.GetComponent<Toggle>().group = GetComponentInParent<ToggleGroup>();
 
         }
     }
@@ -89,7 +97,6 @@ public class InventoryManager : MonoBehaviour
         foreach (EquipmentSlot slot in equipmentSlots)
         {
             float dist = Vector2.Distance(customCursor.position, slot.transform.position);
-            Debug.Log(equipmentSlot);
             if (dist < minDistance && slot.typeOfSlot.ToString() == customCursor.GetComponentInChildren<InventoryItem>().item.typeOfItem.ToString()) //&& //)
             {
                 equipmentSlot = slot;
@@ -151,7 +158,6 @@ public class InventoryManager : MonoBehaviour
 
     public void AddItem(ItemInfo item)
     {
-        Debug.Log("long");
         foreach (GameObject emptySlot in emptySlots)
         {
             InventorySlot slot = emptySlot.GetComponent<InventorySlot>();

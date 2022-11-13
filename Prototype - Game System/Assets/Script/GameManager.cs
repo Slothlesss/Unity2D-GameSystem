@@ -24,11 +24,6 @@ public class GameManager : MonoBehaviour
         }
         ActiveToggle = optionButtonPool.GetComponentsInChildren<Toggle>().Single(i => i.isOn);
         viewDic[ActiveToggle.name].gameObject.SetActive(true);
-        foreach (KeyValuePair<string, UISystemView> view in viewDic)
-        {
-            Debug.Log(view.Value.name);
-            Debug.Log(view.Key);
-        }
 
         Instance = this;
     }

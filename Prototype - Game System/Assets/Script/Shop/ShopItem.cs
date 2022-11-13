@@ -34,48 +34,17 @@ public class ShopItem : ItemBase
         if (typeCurrency == ShopManager.Currency.Gold)
         {
             currencyImage.sprite = ShopManager.Instance.currencySprites[0];
-            price = base.item.itemLevel * 10 * SetPriceByRarity();
+            price = base.item.itemLevel * 10 * base.SetPriceByRarity();
             priceText.text = price.ToString();
         }
         else
         {
             currencyImage.sprite = ShopManager.Instance.currencySprites[1];
-            price = base.item.itemLevel * SetPriceByRarity();
+            price = base.item.itemLevel * base.SetPriceByRarity();
             priceText.text = price.ToString();
         }
     }
-    public int SetPriceByRarity()
-    {
-        if (item.rarity == ItemManager.Rarity.Common)
-        {
-            return 1;
-        }
-        else if (item.rarity == ItemManager.Rarity.Uncommon)
-        {
-            return 5;
-        }
-        else if (item.rarity == ItemManager.Rarity.Rare)
-        {
-            return 20;
-        }
-        else if (item.rarity == ItemManager.Rarity.Epic)
-        {
-            return 100;
-        }
-        else if (item.rarity == ItemManager.Rarity.Mythical)
-        {
-            return 500;
-        }
-        else if (item.rarity == ItemManager.Rarity.Legendary)
-        {
-            return 2000;
-        }
-        else if (item.rarity == ItemManager.Rarity.God)
-        {
-            return 10000;
-        }
-        return 0;
-    }
+    
 
     public void EnableBuyButton()
     {
