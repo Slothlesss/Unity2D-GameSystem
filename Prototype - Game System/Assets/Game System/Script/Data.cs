@@ -4,27 +4,37 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "new data", menuName = "Data")]
 public class Data : ScriptableObject
 {
-
     [System.Serializable]
-    public class ItemData
+    public class ItemData 
     {
-        public ItemInfo info;
-        public int amount;
         public int ID;
-        public ItemData(ItemInfo i, int a)
+        public ItemInfo item;
+        public int amount;
+        public ItemData(int _id, ItemInfo _item, int _amount)
         {
-            info = i;
-            amount = a;
+            ID = _id;
+            item = _item;
+            amount = _amount;
         }
     }
 
     public List<ItemData> itemDatas;
-
-    public void AddItemData(ItemInfo info, int amount)
+    public int GetAmount(ItemInfo info)
     {
         foreach (ItemData data in itemDatas)
         {
-            if (data.info == info) //if already have
+            if (data.item == info) //if already have
+            {
+                return data.amount;
+            }
+        }
+        return 0;
+    }
+    public void AddItemData(ItemInfo info, int amount, int id)
+    {
+        foreach (ItemData data in itemDatas)
+        {
+            if (data.item == info) //if already have
             {
                 if (info.countable) //if item is countable, otherwise we always added item, so I write at below.
                 {
@@ -33,13 +43,20 @@ public class Data : ScriptableObject
                 }
             }
         }
-        ItemData newData = new ItemData(info, amount);
+        ItemData newData = new ItemData(id, info, amount);
         itemDatas.Add(newData);
     }
 
-    void RemoveItemData(ItemInfo info)
+    public void RemoveItemData(int ID)
     {
-        itemDatas.Remove(new ItemData(info, 1));
+        foreach (ItemData data in itemDatas)
+        {
+            if(data.ID == ID)
+            {
+                itemDatas.Remove(data);
+                return;
+            }
+        }
     }
 
 }

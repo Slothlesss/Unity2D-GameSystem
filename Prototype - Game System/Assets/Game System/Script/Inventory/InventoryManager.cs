@@ -34,11 +34,8 @@ public class InventoryManager : MonoBehaviour
     public List<GameObject> emptySlots = new List<GameObject>();
     public List<GameObject> lockSlots = new List<GameObject>();
     public List<EquipmentSlot> equipmentSlots = new List<EquipmentSlot>();
-    public Dictionary<string, int> inventoryItems = new Dictionary<string, int>(); //name, amount
-    
 
 
-    
     bool isCarryingItem = false;
     Toggle ActiveSlot;
 
@@ -58,6 +55,7 @@ public class InventoryManager : MonoBehaviour
     public GameObject statGroup;
     public GameObject inventoryField;
 
+    public int startIdx = 0;
     
     private void Awake()
     {
@@ -108,7 +106,10 @@ public class InventoryManager : MonoBehaviour
         for (int i = 0; i < inventorySize; i++)
         {
             GameObject addSlot = Instantiate(SlotFree, Grid.transform);
+            addSlot.GetComponent<InventorySlot>().index = startIdx;
+            startIdx++;
             emptySlots.Add(addSlot);
+            
             addSlot.GetComponent<Toggle>().group = GetComponentInParent<ToggleGroup>();
             if (i == 0)
             {
@@ -118,6 +119,8 @@ public class InventoryManager : MonoBehaviour
         for (int i = 0; i < inventoryLockedSize; i++)
         {
             GameObject addSlot = Instantiate(SlotLocked, Grid.transform);
+            addSlot.GetComponent<InventorySlot>().index = startIdx;
+            startIdx++;
             lockSlots.Add(addSlot);
             addSlot.GetComponent<Toggle>().group = GetComponentInParent<ToggleGroup>();
         }
@@ -128,7 +131,7 @@ public class InventoryManager : MonoBehaviour
         {
             foreach(Data.ItemData data in InventoryData.itemDatas)
             {
-                InitializeItemFromData(data.info);
+                InitializeItemFromData(data.item);
             }
         }
     }
@@ -244,9 +247,8 @@ public class InventoryManager : MonoBehaviour
                 inventoryField.SetActive(false);
             }
         }
-        else //Display equiptableField => I will update this one in the future.
-             //Intially, I want it nearly the slot, but after researching, I think it's quite hard to equip item in the right slot.
-             //Therefore, using the same way when unequip item I think it would be better <3
+        else //Display equiptableField
+             //Using the same way when unequip item 
         {
             //Display and Undisplay the equipable field
         }
@@ -476,7 +478,6 @@ public class InventoryManager : MonoBehaviour
     }
     public void AddItem(ItemInfo item)
     {
-        InventoryData.AddItemData(item, 1);
         foreach (GameObject emptySlot in emptySlots)
         {
             InventorySlot slot = emptySlot.GetComponent<InventorySlot>();
@@ -490,19 +491,20 @@ public class InventoryManager : MonoBehaviour
                 slot.isEmpty = false;
 
 
-                if (item.countable) //Add item to dictionary to check whether it contains nor not?
+                InventoryData.AddItemData(item, 1, slot.index);
+
+                if (item.countable)
                 {
-                    inventoryItems.Add(item.itemName, 1);
-                    slot.countText.text = inventoryItems[item.itemName].ToString();
+                    slot.countText.text = InventoryData.GetAmount(item).ToString();
                 }
                 break;
             }
             else if (item.countable)
             {
+                InventoryData.AddItemData(item, 1, slot.index);
                 if (slot.ItemType().item.itemName  == item.itemName)
                 {
-                    inventoryItems[item.itemName]++;
-                    slot.countText.text = inventoryItems[item.itemName].ToString();
+                    slot.countText.text = InventoryData.GetAmount(item).ToString();
                     break;
                 }
             }
@@ -525,8 +527,7 @@ public class InventoryManager : MonoBehaviour
 
                 if (item.countable) //Add item to dictionary to check whether it contains nor not?
                 {
-                    inventoryItems.Add(item.itemName, 1);
-                    slot.countText.text = inventoryItems[item.itemName].ToString();
+                    slot.countText.text = InventoryData.GetAmount(item).ToString();
                 }
                 break;
             }
@@ -534,8 +535,7 @@ public class InventoryManager : MonoBehaviour
             {
                 if (slot.ItemType().item.itemName == item.itemName)
                 {
-                    inventoryItems[item.itemName]++;
-                    slot.countText.text = inventoryItems[item.itemName].ToString();
+                    slot.countText.text = InventoryData.GetAmount(item).ToString();
                     break;
                 }
             }
@@ -546,7 +546,7 @@ public class InventoryManager : MonoBehaviour
         InventorySlot activeSlot = ActiveSlot.GetComponent<InventorySlot>();
         if (!activeSlot.isEmpty)
         {
-            inventoryItems.Remove(activeSlot.ItemType().item.itemName);
+            InventoryData.RemoveItemData(activeSlot.index);
             activeSlot.DestroyItem();
         }
     }

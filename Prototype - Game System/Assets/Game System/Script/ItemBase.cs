@@ -7,6 +7,7 @@ using TMPro;
 public class ItemBase : MonoBehaviour
 {
     public ItemInfo item;
+    
     [SerializeField] public Image img;
     [SerializeField] public Image backGround;
     [SerializeField] public Image frame;

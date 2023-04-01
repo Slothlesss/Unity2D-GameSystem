@@ -9,6 +9,7 @@ public class InventorySlot : MonoBehaviour
 {
     public bool isEmpty;
     public bool isLocked;
+    public int index;
     public GameObject lockObject;
     public Toggle Toggle;
     public TextMeshProUGUI countText;
