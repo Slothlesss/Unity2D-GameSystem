@@ -2,15 +2,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GachaManager : MonoBehaviour
 {
     [SerializeField] GachaRate[] gacha;
     [SerializeField] Transform parent;
+    [SerializeField] List<TextMeshProUGUI> UIRate;
     [SerializeField] GameObject characterCardGO;
     Cards card;
 
     GameObject[] characterCards = new GameObject[10];
+    private void Awake()
+    {
+        for(int i = 0; i < gacha.Length; i++ )
+        {
+            UIRate[i].text = gacha[i].rate.ToString() + "%";
+        }
+    }
     public void GachaOneTime()
     {
         for (int i = 1; i < characterCards.Length; i++)

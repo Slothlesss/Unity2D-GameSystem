@@ -16,6 +16,6 @@ MonoBehaviour:
   color: {r: 1, g: 1, b: 1, a: 1}
   countable: 0
   itemName: SuperBundle
-  itemLevel: 0
+  itemLevel: 10
   typeOfItem: 0
   rarity: 5

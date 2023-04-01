@@ -9,7 +9,6 @@ public class UpgradeManager : MonoBehaviour
     public InventoryItem[] upgradeItems;
     public EquipmentSlot[] equipmentSlots;
     public GameObject upgradeInventory;
-    InventoryItem equipItem;
 
     [Header("UpgradeFunction")]
 
@@ -49,7 +48,6 @@ public class UpgradeManager : MonoBehaviour
 
     private void Start()
     {
-
         if (TogglePool.activeInHierarchy)
         {
 
@@ -81,16 +79,25 @@ public class UpgradeManager : MonoBehaviour
 
         for (int i = 0; i < 6; i++)
         {
+            InventoryItem equipItem = null;
             if (InventoryManager.Instance.equipmentSlots[i].GetComponentInChildren<InventoryItem>() != null)
             {
                 equipItem = InventoryManager.Instance.equipmentSlots[i].GetComponentInChildren<InventoryItem>();
+                Debug.Log(InventoryManager.Instance.equipmentSlots[i].GetComponentInChildren<InventoryItem>());
             }
+            else
+            {
+                upgradeItems[i].item = null;
+                upgradeItems[i].gameObject.SetActive(false);
+                Debug.Log(InventoryManager.Instance.equipmentSlots[i].GetComponentInChildren<InventoryItem>());
+            }    
             InventoryItem upgradeItem = upgradeItems[i];
-            if (equipItem && equipItem.item.typeOfItem.ToString() == equipmentSlots[i].typeOfSlot.ToString()) //display equip item in upgrade inventory
+
+            //------Display equip item in upgrade inventory
+            if (equipItem && equipItem.item.typeOfItem == equipmentSlots[i].typeOfSlot) 
             {
                 upgradeItem.gameObject.SetActive(true);
                 upgradeItem.item = equipItem.item;
-                Debug.Log("Long");
 
             }
             if (ActiveFunction.name == "UpgradeFunction")
@@ -149,8 +156,6 @@ public class UpgradeManager : MonoBehaviour
                 slot1Stats.text = StatsText(item) + item.Stats.ToString();
             }
 
-            Debug.Log(2);
-
         }
         else if(ActiveFunction.name == "TransferFunction" )
         {
@@ -162,13 +167,11 @@ public class UpgradeManager : MonoBehaviour
                 slot2Stats.gameObject.SetActive(true);
                 slot2Stats.text = StatsText(item) + item.Stats.ToString();
 
-                Debug.Log(3);
             }
             else if(item.item == transferSlot1.item) //DeselectSlot1
             {
                 transferSlot1.gameObject.SetActive(false);
                 slot1Stats.gameObject.SetActive(false);
-                Debug.Log(4);
             }
             else if(transferSlot2.gameObject.activeInHierarchy)
             {
@@ -176,14 +179,12 @@ public class UpgradeManager : MonoBehaviour
                 {
                     transferSlot2.gameObject.SetActive(false);
                     slot2Stats.gameObject.SetActive(false);
-                    Debug.Log(5);
                 }
                 else //swap slot 2
                 {
                     transferSlot2.item = item.item;
                     transferSlot2.Level = item.Level;
                     slot2Stats.text = StatsText(item) + item.Stats.ToString();
-                    Debug.Log(6);
                 }
             }
             slot1Stats.text = StatsText(transferSlot1) + transferSlot1.Stats.ToString(); //reupdate Slot1 stats

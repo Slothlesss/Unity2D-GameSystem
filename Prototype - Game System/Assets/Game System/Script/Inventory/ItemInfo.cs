@@ -12,6 +12,10 @@ public class ItemInfo : ScriptableObject
     public Color color;
     public bool countable;
     public string itemName;
+    [TextArea(2, 2)]
+    public string specialStat;
+    [TextArea(3, 3)]
+    public string itemDescription;
     public int itemLevel;
     public ItemManager.ItemType typeOfItem;
     public ItemManager.Rarity rarity;

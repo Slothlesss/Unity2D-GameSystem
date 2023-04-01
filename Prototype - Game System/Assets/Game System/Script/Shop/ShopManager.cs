@@ -47,20 +47,43 @@ public class ShopManager : MonoBehaviour
         public string name;
         public ItemInfo[] itemInfos; //Kinds of Weapon
     }
+    [System.Serializable]
+    public struct shopContainer
+    {
+        public string name;
+        public dailyShopItemType[] kindOfItem;
+    }
+    public shopContainer[] shopContainers;
 
-    public dailyShopItemType[] shopDailyItems;
+
+    public List<int> times;
+
+
+
+
 
     public void Awake()
     {
         Instance = this;
-        Diamond = 500;
-        Gold = 10000;
+        Diamond = 50000;
+        Gold = 100000;
     }
 
     public void Start()
     {
+        for(int i = 0; i < shopMenu.Length; i++)
+        {
+            DisplayMenu(i);
+            if (i < 4)
+            {
+                Refresh(i);
+            }
+            else
+            {
+                RefreshCurrency();
+            }
+        }
         DisplayMenu(0);
-        Refresh();
     }
 
     public void BuyItem(ShopItem item)
@@ -84,7 +107,12 @@ public class ShopManager : MonoBehaviour
             }
             else //If item you buy is Gold or Diamond
             {
-
+                if (item.typeCurrency == Currency.Diamond && Diamond >= item.price)
+                {
+                    Diamond -= item.price;
+                    item.Attempt++;
+                    Gold += item.price * 10;
+                }
             }
         }
         if(item.Attempt >= item.maxAttempt)
@@ -105,18 +133,25 @@ public class ShopManager : MonoBehaviour
         
     }
 
-    public void Refresh()
+    public void Refresh(int idx)
     {
         for (int i = 0; i < shopSlots.Length; i++)
         {
-            int randType = Random.Range(0, shopDailyItems.Length);
-            int ranLevel = Random.Range(0, shopDailyItems[randType].itemInfos.Length);
-            shopSlots[i].item = shopDailyItems[randType].itemInfos[ranLevel];
+            int randKind = Random.Range(0, shopContainers[idx].kindOfItem.Length);
+            int ranItem = Random.Range(0, shopContainers[idx].kindOfItem[randKind].itemInfos.Length);
+            shopSlots[i].item = shopContainers[idx].kindOfItem[randKind].itemInfos[ranItem];
             int ranCurrency = Random.Range(0, 2);
             shopSlots[i].typeCurrency = ranCurrency == 0 ? Currency.Gold : Currency.Diamond;
             shopSlots[i].Attempt = 0;
             shopSlots[i].EnableBuyButton();
-
+        }
+    }
+    public void RefreshCurrency()
+    {
+        for(int i = 0; i <shopSlots.Length; i++)
+        {
+            shopSlots[i].Attempt = 0;
+            shopSlots[i].EnableBuyButton();
         }
     }
 

@@ -11,11 +11,30 @@ public class CraftManager : MonoBehaviour
     public Slot[] craftSlots;
     public List<Cards> cardList;
     public string[] recipes;
-    public ItemInfo[] recipeResults;
-    public InventoryItem resultSlot;
 
+    [System.Serializable]
+    public struct recipeResult
+    {
+        public string name;
+        public ItemInfo rarityEarned;//Question icon
+        public ItemInfo[] type;
+    }
+
+    public recipeResult[] itemEarned;
+    public InventoryItem resultSlot;
+    public InventoryItem resultSlotReal;
+
+    public GameObject CraftSystem;
+
+    int recipeIndex;
+    bool canCraft;
     private void Update()
     {
+        if(!CraftSystem.activeInHierarchy)
+        {
+            RemoveAll();
+            RemoveResult();
+        }
         if(Input.GetMouseButtonUp(0))
         {
             if (currentCard != null)
@@ -41,8 +60,6 @@ public class CraftManager : MonoBehaviour
                 if (nearestSlot != null)
                 {
                     nearestSlot.gameObject.SetActive(true);
-                    nearestSlot.GetComponent<Image>().sprite = currentCard.GetComponent<Image>().sprite;
-                    nearestSlot.GetComponent<Image>().color = currentCard.GetComponent<Image>().color;
                     nearestSlot.card = currentCard;
                     cardList[nearestSlot.index] = currentCard;
                 }
@@ -50,16 +67,15 @@ public class CraftManager : MonoBehaviour
                 {
                     GameManager.Instance.ReceiveItem(currentCard.card.itemName);
                 }
-                currentCard = null;
                 CheckForCreatedRecipes();
+                currentCard = null;
             }
         }
     }
 
     void CheckForCreatedRecipes()
     {
-        resultSlot.gameObject.SetActive(false);
-        resultSlot.item = null;
+        RemoveResult();
         string currentRecipeString = "";
         foreach(Cards card in cardList)
         {
@@ -78,8 +94,9 @@ public class CraftManager : MonoBehaviour
             if (recipes[i] == currentRecipeString) //Check recipe
             {
                 resultSlot.gameObject.SetActive(true);
-                //Chi can thay doi ItemInfo
-                resultSlot.item = recipeResults[i];
+                resultSlot.item = itemEarned[i].rarityEarned;
+                recipeIndex = i;
+                canCraft = true;
             }
         }
     }
@@ -90,11 +107,17 @@ public class CraftManager : MonoBehaviour
             OnClickSlot(slot);
         }
     }
+    public void RemoveResult()
+    {
+        canCraft = false;
+        resultSlot.gameObject.SetActive(false);
+        resultSlot.item = null;
+    }
     public void OnClickSlot(Slot slot)
     {
         if (slot.card != null)
         {
-
+            canCraft = false;
             GameManager.Instance.ReceiveItem(slot.card.card.itemName);
             slot.card = null;
             cardList[slot.index] = null;
@@ -105,13 +128,15 @@ public class CraftManager : MonoBehaviour
     }
     public void Craft()
     {
-        if(resultSlot.item != null) //can craft ?
+        if(canCraft) //can craft ?
         {
-            //InventoryManager.Instance.AddItem();
-            GameManager.Instance.ReceiveItem(resultSlot.item.itemName);
+            //GameManager.Instance.ReceiveItem(resultSlot.item.itemName);
+
+            int rand = Random.Range(0, itemEarned[recipeIndex].type.Length);
+            resultSlot.item = itemEarned[recipeIndex].type[rand];
             InventoryManager.Instance.AddItem(resultSlot.item);
-            resultSlot.item = null;
-            resultSlot.gameObject.SetActive(false);
+            //resultSlot.item = null;
+            //resultSlot.gameObject.SetActive(false);
             foreach (Slot slot in craftSlots) //After crafting
             {
                 if (slot.card != null)
@@ -121,6 +146,7 @@ public class CraftManager : MonoBehaviour
                     slot.gameObject.SetActive(false);
                 }
             }
+            canCraft = false;
         }
     }
     public void OnMouseDownItem(Cards card)

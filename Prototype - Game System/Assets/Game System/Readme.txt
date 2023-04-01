@@ -1,28 +1,33 @@
-1. This package included:
-- Gacha System: 
-	+ Has 1-time Button and 10-time Button. The item (materials) got from this system can be used for Craft System
-- Craft System: 
-	+ You can modify the recipe in "CraftManager" by using the name of materials + null (if you just want 3 materials to craft the item)
-	+ After clicking craft, the item will be added to your Inventory
-- Shop System:
-	+ Each item will have attempt, you can click "Refresh Button" or adjust the max attempt in the code
-	+ If you have enough currency and click to "Buy Button", the item will be added to your Inventory
-- Inventory System:
-	+ Equip item (only Weapon fit Weapon slots, otherwise it will move back to the inital position)
-	+ Drag drop with hand-made Custom Cursor
-	+ Delete Item
-- Upgrade System:
-	+ Upgrade Function: at the moment just only increase the level (item stats will be updated in the future)
-	+ Transfer Function: transfering the level of 2 times, 
+1. The Game System currently included:
++ Gacha System:
+- Has 1-time button and 10-timebutton.
+- UI Panel contains ratios.
 
++ Craft System:
+- The materials gotten from Gacha System can be used here.
+- Depending on your recipes, you can drag drop items into the slot => create equipment.
 
-However, make sure that this packages might not be suitable for intermidate developers. 
-I will update small functions in the future (after 1-2 months) like: item stats, disassemble item, sell item, Transfer 2 items in same type...
-Besides, I will update more assets too.
++ Shop System:
+- You can switch between them to buy anything within limited attempt.
+- However, it does not include in-app purchase or watching ads to buy.
 
-2. License
-- You cannot refund it as I wouldn't know whether you delete the package or not
-- You can use in any commercial or non-commercial project, except redistribute the package
++ Inventory System:
+- The equipment bought from Shop System or created from Craft System will appear here.
+- You can drag and drop these equipment that fit the equipment slot, otherwise it will turn back to the inventory. (*) But it doesn't increase player stats.
+- There're also the delete button allowing to to delete the item.
+- You can unequip item. The inventory field that allows you to unequip will display when you hoding item.
+- Stackable and unstackable item.
+(**) Does not have function of using stackable item (HP Potion, MP Potion). I tend to update in the future as it involves in player stats.
+(*) and (**) I will update in the future.
 
- 
- 
++ Upgrade System:
+- The equiping item will be displayed in this system.
+- This system includes 2 functions: upgrade and transfer.
+- The upgrade function is used for upgrade level of equipment.
+- The transfer function is for transfering level of 2 equipments.
+
+Make sure that the package is not using anything like special APIs, database, addresable, event system ..., which I believe that is in the higher level. All the function is using code with some UI Component like (Toggle, Grid Layout, Button, TextMeshPro,...) . Tell me if there is any bugs.
+
++ Lisence:
+- You cannot redistribute the package. However, you can use it in any commercial or non-commercial project and you're entiled to use any assets
+- You cannot refund as I don't know that you will delete after requesting refund.

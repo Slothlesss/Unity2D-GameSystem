@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class EquipmentSlot : MonoBehaviour
 {
-    public enum TypeOfSlot { Weapon, Armor, Shoes, Helmet, Necklace, Ring};
-    public TypeOfSlot typeOfSlot;
+    public ItemManager.ItemType typeOfSlot;
     public GameObject GreenFrame;
     public bool isEquip;
     public void ShowCannotEquip()

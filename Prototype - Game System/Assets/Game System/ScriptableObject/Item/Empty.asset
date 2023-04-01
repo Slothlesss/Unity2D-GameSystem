@@ -16,6 +16,7 @@ MonoBehaviour:
   color: {r: 1, g: 1, b: 1, a: 1}
   countable: 0
   itemName: Empty
+  itemDescription: This is magic item
   itemLevel: 0
   typeOfItem: 2
   rarity: 0

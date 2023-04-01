@@ -7,9 +7,9 @@ using TMPro;
 public class ItemBase : MonoBehaviour
 {
     public ItemInfo item;
-    [SerializeField] Image img;
-    [SerializeField] Image backGround;
-    [SerializeField] Image frame;
+    [SerializeField] public Image img;
+    [SerializeField] public Image backGround;
+    [SerializeField] public Image frame;
 
     // Start is called before the first frame update
     public virtual void Start()

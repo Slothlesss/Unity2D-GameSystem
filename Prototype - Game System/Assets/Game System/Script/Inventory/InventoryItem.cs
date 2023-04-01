@@ -47,6 +47,8 @@ public class InventoryItem : ItemBase
             {
                 slot.CountText(true);
             }
+
+            levelText.gameObject.SetActive(false);
         }
 
     }

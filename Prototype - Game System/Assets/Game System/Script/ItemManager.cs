@@ -14,7 +14,7 @@ public class ItemManager : MonoBehaviour
 
     }
 
-    public enum ItemType { Currency, Weapon, Armor, Shoes, Helmet, Necklace, Ring }
+    public enum ItemType { Currency, Weapon, Armor, Shoes, Helmet, Necklace, Ring, Scroll, Potion, Book }
     public enum Rarity { Common, Uncommon, Rare, Epic, Mythical, Legendary, God }
     //public Sprite[] backGrounds;
     //public Sprite[] frames;
