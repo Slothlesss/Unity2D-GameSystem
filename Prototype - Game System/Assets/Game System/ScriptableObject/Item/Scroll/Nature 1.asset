@@ -12,10 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Nature 1
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: e48b6efcb3fe1a6438ad835dd66c350b, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 1
-  itemName: MythicalScroll
-  itemLevel: 1
-  typeOfItem: 7
-  rarity: 1
+  prop:
+    image: {fileID: 21300000, guid: e48b6efcb3fe1a6438ad835dd66c350b, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 1
+    itemName: Nature 1
+    specialStat: Increase <color=green>10%</color> nature power
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 7
+    rarity: 1
+    itemLevel: 1
+    stats: []

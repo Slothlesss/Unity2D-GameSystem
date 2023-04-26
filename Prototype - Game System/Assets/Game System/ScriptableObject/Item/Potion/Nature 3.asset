@@ -12,13 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Nature 3
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: f545d39870f7d6a44b132ecd92ee9a3d, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 1
-  itemName: Nature Potion (L)
-  specialStat: Increase <color=green>50%</color> Nature power
-  itemDescription: The potion was created by extracting over 100 types of flora through
-    out the world
-  itemLevel: 3
-  typeOfItem: 8
-  rarity: 1
+  prop:
+    image: {fileID: 21300000, guid: f545d39870f7d6a44b132ecd92ee9a3d, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 1
+    itemName: Nature 3
+    specialStat: Increase <color=green>30%</color> nature power
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 8
+    rarity: 1
+    itemLevel: 1
+    stats: []

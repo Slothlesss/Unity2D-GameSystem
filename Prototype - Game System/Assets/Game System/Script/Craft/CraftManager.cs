@@ -94,7 +94,7 @@ public class CraftManager : MonoBehaviour
             if (recipes[i] == currentRecipeString) //Check recipe
             {
                 resultSlot.gameObject.SetActive(true);
-                resultSlot.item = itemEarned[i].rarityEarned;
+                resultSlot.data.info = itemEarned[i].rarityEarned;
                 recipeIndex = i;
                 canCraft = true;
             }
@@ -111,7 +111,7 @@ public class CraftManager : MonoBehaviour
     {
         canCraft = false;
         resultSlot.gameObject.SetActive(false);
-        resultSlot.item = null;
+        resultSlot.data.info = null;
     }
     public void OnClickSlot(Slot slot)
     {
@@ -133,8 +133,8 @@ public class CraftManager : MonoBehaviour
             //GameManager.Instance.ReceiveItem(resultSlot.item.itemName);
 
             int rand = Random.Range(0, itemEarned[recipeIndex].type.Length);
-            resultSlot.item = itemEarned[recipeIndex].type[rand];
-            InventoryManager.Instance.AddItem(resultSlot.item);
+            resultSlot.data.info = itemEarned[recipeIndex].type[rand];
+            InventoryManager.Instance.AddItem(resultSlot.data);
             //resultSlot.item = null;
             //resultSlot.gameObject.SetActive(false);
             foreach (Slot slot in craftSlots) //After crafting

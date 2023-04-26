@@ -12,13 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Dark 1
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 5ebf293649f90a646ad9c1ea25a6ca97, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 1
-  itemName: Dark Potion (S)
-  specialStat: Increase <color=purple>10%</color> Dark power
-  itemDescription: The potion was created by collecting the fatal acid from Death
-    Island
-  itemLevel: 1
-  typeOfItem: 8
-  rarity: 3
+  prop:
+    image: {fileID: 21300000, guid: 5ebf293649f90a646ad9c1ea25a6ca97, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 1
+    itemName: Dark 1
+    specialStat: Increase <color=purple>10%</color> dark power
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 8
+    rarity: 3
+    itemLevel: 1
+    stats: []

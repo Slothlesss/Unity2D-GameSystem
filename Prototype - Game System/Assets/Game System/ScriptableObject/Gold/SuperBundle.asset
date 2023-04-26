@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: SuperBundle
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 68affb78f6c3814458ebec8e7ed6dc1a, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 0
-  itemName: SuperBundle
-  itemLevel: 10
-  typeOfItem: 0
-  rarity: 5
+  prop:
+    image: {fileID: 21300000, guid: 68affb78f6c3814458ebec8e7ed6dc1a, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 0
+    itemName: 
+    specialStat: 
+    itemDescription: 
+  stat:
+    type: 0
+    rarity: 5
+    itemLevel: 1
+    stats: []

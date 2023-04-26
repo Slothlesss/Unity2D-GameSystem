@@ -12,12 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Rare - Ring
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: f3cbe20e39650f441a38b7d10cd2e073, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 0
-  itemName: Broken Ring
-  specialStat: 
-  itemDescription: A hole? Actually it's a wood ring
-  itemLevel: 3
-  typeOfItem: 6
-  rarity: 2
+  prop:
+    image: {fileID: 21300000, guid: f3cbe20e39650f441a38b7d10cd2e073, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 0
+    itemName: Wood Ring
+    specialStat: 
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 6
+    rarity: 2
+    itemLevel: 3
+    stats:
+    - type: 0
+      value: 15
+    - type: 0
+      value: 15

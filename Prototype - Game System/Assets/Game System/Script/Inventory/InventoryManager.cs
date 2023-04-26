@@ -52,18 +52,48 @@ public class InventoryManager : MonoBehaviour
     public TextMeshProUGUI itemDescription;
 
     public GameObject verticalSlash;
-    public GameObject statGroup;
+    public GameObject itemViewStatGroup;
+    public StatUI[] itemStats;
     public GameObject inventoryField;
+    public PlayerStat playerStat;
+
+    public Sprite[] statSprites;
 
     public int startIdx = 0;
     
     private void Awake()
     {
+        if (Data.LoadData() != null)
+        {
+            InventoryData = Data.LoadData();
+        }
+        //StartCoroutine(SaveDataPeriodically(10.0f)); //The data will be saved automatically once after 10 sec.
         Instance = this;
+        itemStats = itemViewStatGroup.GetComponentsInChildren<StatUI>();
+        foreach (StatUI stat in itemStats)
+        {
+            stat.gameObject.SetActive(false);
+        }
         SpawnSlots();
         SpawnItemsFromData();
     }
-    
+    /*IEnumerator SaveDataPeriodically(float interval)
+    {
+        while (true)
+        {
+            Data.SaveData(InventoryData);
+            yield return new WaitForSeconds(interval);
+        }
+    } */
+    public void OnApplicationQuit()
+    {
+        // Save any unsaved data here
+        Data.SaveData(InventoryData);
+    }
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
     private void Start()
     {
         OnSelectTab(true);
@@ -127,25 +157,32 @@ public class InventoryManager : MonoBehaviour
     }
     void SpawnItemsFromData()
     {
-        if(InventoryData.itemDatas.Count != 0)
+        if(InventoryData.inventoryData.Count != 0)
         {
-            foreach(Data.ItemData data in InventoryData.itemDatas)
+            foreach(ItemBase.ItemData data in InventoryData.inventoryData)
             {
-                InitializeItemFromData(data.item);
+                InitializeInventoryItemFromData(data);
+            }
+        }
+        if(InventoryData.equipmentData.Count != 0)
+        {
+            foreach (ItemBase.ItemData data in InventoryData.equipmentData)
+            {
+                InitializeEquippedItemFromData(data);
             }
         }
     }
     void ChooseItem()
     {
         InventoryItem currentItem = ActiveSlot.GetComponentInChildren<InventoryItem>();
-        DisplayStat(currentItem);
+        DisplayItemStat(currentItem);
     }
-    void DisplayStat(InventoryItem currentItem)
+    void DisplayItemStat(InventoryItem currentItem)
     {
         if (currentItem != null)
         {   //---Check special condition
             //----1. Check specialStat
-            if (currentItem.item.specialStat == "")
+            if (currentItem.data.info.prop.specialStat == "")
             {
                 itemSpecialStat.gameObject.SetActive(false);
             }
@@ -154,41 +191,82 @@ public class InventoryManager : MonoBehaviour
                 itemSpecialStat.gameObject.SetActive(true);
             }
             //----2. Check type of item => if (item == Potion, Book, Scroll => only show Image, no level, no rarity) || or you can set your own type
-            if (currentItem.item.typeOfItem == ItemManager.ItemType.Potion
-                || currentItem.item.typeOfItem == ItemManager.ItemType.Book
-                || currentItem.item.typeOfItem == ItemManager.ItemType.Scroll)
+            if (currentItem.data.info.stat.type == ItemManager.ItemType.Potion
+                || currentItem.data.info.stat.type == ItemManager.ItemType.Book
+                || currentItem.data.info.stat.type == ItemManager.ItemType.Scroll)
             {
                 verticalSlash.SetActive(false);
-                statGroup.SetActive(false);
+                itemViewStatGroup.SetActive(false);
             }
-            else
+            else if(currentItem.data.info.stat.type != ItemManager.ItemType.Currency) //----3. If Item is Weapon -> Ring
             {
                 verticalSlash.SetActive(true);
-                statGroup.SetActive(true);
+                itemViewStatGroup.SetActive(true);
+                foreach(StatUI stat in itemStats)
+                {
+                    stat.gameObject.SetActive(false);
+                }
+                int statLen = currentItem.data.stat.stats.Length;
+                for(int i = 0; i < statLen; i++)
+                {
+                    itemStats[i].gameObject.SetActive(true);
+                    itemStats[i].statImage.sprite = checkStatImage(currentItem.data.stat.stats[i]);
+                    itemStats[i].statText.text = currentItem.data.stat.stats[i].value.ToString();
+                }
             }
 
             //---Then, set main features
-            itemNameUI.text = currentItem.item.itemName;
+            itemNameUI.text = currentItem.data.info.prop.itemName;
             itemBackgroundUI.sprite = currentItem.backGround.sprite;
             itemFrameUI.sprite = currentItem.frame.sprite;
             itemImageUI.sprite = currentItem.img.sprite;
-            if (statGroup.activeInHierarchy)
+            if (itemViewStatGroup.activeInHierarchy)
             {
-                itemLevel.text = "Level " + currentItem.item.itemLevel.ToString();
+                itemLevel.text = "Level " + currentItem.data.info.stat.itemLevel.ToString();
                 itemRarity.text = checkRarity(currentItem);
             }
             if (itemSpecialStat.gameObject.activeInHierarchy)
             {
-                itemSpecialStat.text = currentItem.item.specialStat;
+                itemSpecialStat.text = currentItem.data.info.prop.specialStat;
             }
-            itemDescription.text = currentItem.item.itemDescription;
+            itemDescription.text = currentItem.data.info.prop.itemDescription;
 
         }
     }
+    Sprite checkStatImage(ItemInfo.ItemStat.Stat stat)
+    {
+        if(stat.type == ItemManager.StatType.Attack)
+        {
+            return statSprites[0];
+        }
+        else if (stat.type == ItemManager.StatType.AttackSpeed)
+        {
+            return statSprites[1];
+        }
+        else if (stat.type == ItemManager.StatType.AttackRange)
+        {
+            return statSprites[2];
+        }
+        else if(stat.type == ItemManager.StatType.Health)
+        {
+            return statSprites[3];
+        }
+        else if(stat.type == ItemManager.StatType.PhysicalDefense)
+        {
+            return statSprites[4];
+        }
+        else if (stat.type == ItemManager.StatType.MagicalDefense)
+        {
+            return statSprites[5];
+        }
+        return null;
+    }
     string checkRarity(InventoryItem item)
     {
-        switch (item.item.rarity.ToString())
+        switch (item.data.info.stat.rarity.ToString())
         {
+            case "God":
+                return "<color=#FF69B4>God</color>";
             case "Legendary":
                 return "<color=red>Legendary</color>";
             case "Mythical":
@@ -212,7 +290,7 @@ public class InventoryManager : MonoBehaviour
             if (!isCarryingItem)
             {
                 InventoryItem item = ActiveSlot.GetComponentInChildren<InventoryItem>();
-                if (item != null && !item.item.countable)
+                if (item != null && !item.data.info.prop.countable)
                 {
                     item.transform.SetParent(customCursor);
                     item.transform.localPosition = Vector3.zero;
@@ -227,7 +305,7 @@ public class InventoryManager : MonoBehaviour
         // Step 1: Check Slot that has similar types with carrying item => Ex: Sword fits Weapon slot
         EquipmentSlot equipmentSlot = null;
         float minDistance = 50f; //Only nearby
-        EquipmentSlot equipableSlot = equipmentSlots.Single(i => i.typeOfSlot == customCursor.GetComponentInChildren<InventoryItem>().item.typeOfItem);
+        EquipmentSlot equipableSlot = equipmentSlots.Single(i => i.type == customCursor.GetComponentInChildren<InventoryItem>().data.info.stat.type);
         float dist = Vector2.Distance(customCursor.position, equipableSlot.transform.position);
         if (dist < minDistance)
         { 
@@ -261,10 +339,11 @@ public class InventoryManager : MonoBehaviour
             //Case 1: Item taken from Inventory Slot
             if (ActiveSlot.GetComponentInChildren<InventorySlot>() != null)
             {
-                if (!equipmentSlot) // Put item back to inventory
+                if (!equipmentSlot) // Put item back to inventory (Nothing happen)
                 {
                     getItem.transform.SetParent(ActiveSlot.transform);
                     getItem.transform.localPosition = Vector3.zero;
+
                     isCarryingItem = false;
                 }
                 else if (equipmentSlot.isEquip) //SwapItem
@@ -275,6 +354,17 @@ public class InventoryManager : MonoBehaviour
                     getItem.transform.SetParent(equipmentSlot.transform);
                     getItem.transform.localPosition = Vector3.zero;
                     equipmentSlot.ShowCannotEquip();
+
+                    //Update the database
+                    InventoryData.RemoveItemData(InventoryData.equipmentData, itemEquip.data.ID);
+                    InventoryData.AddInventoryData(itemEquip.data);
+
+                    InventoryData.RemoveItemData(InventoryData.inventoryData, getItem.data.ID);
+                    InventoryData.AddEquipmentData(getItem.data);
+
+                    playerStat.RemoveItemStat(itemEquip);
+                    playerStat.AddItemStat(getItem);
+
                     isCarryingItem = false;
                 }
                 else //Equip Item
@@ -284,6 +374,12 @@ public class InventoryManager : MonoBehaviour
                     equipmentSlot.isEquip = true;
                     ActiveSlot.GetComponent<InventorySlot>().isEmpty = true;
                     equipmentSlot.ShowCannotEquip();
+
+                    InventoryData.RemoveItemData(InventoryData.inventoryData, getItem.data.ID);
+                    InventoryData.AddEquipmentData(getItem.data);
+
+                    playerStat.AddItemStat(getItem);
+
                     isCarryingItem = false;
                 }
             }
@@ -305,6 +401,12 @@ public class InventoryManager : MonoBehaviour
                             slot.isEmpty = false;
                             equipableSlot.isEquip = false; //We cannot use "equipmentSlot" because it becomes null 
                             equipableSlot.ShowCannotEquip();
+
+                            InventoryData.RemoveItemData(InventoryData.equipmentData, getItem.data.ID);
+                            InventoryData.AddInventoryData(getItem.data);
+
+                            playerStat.RemoveItemStat(getItem);
+
                             break;
                         }
                     }
@@ -476,7 +578,7 @@ public class InventoryManager : MonoBehaviour
         canExpand = decision;
         return decision;
     }
-    public void AddItem(ItemInfo item)
+    public void AddItem(ItemBase.ItemData data)
     {
         foreach (GameObject emptySlot in emptySlots)
         {
@@ -484,33 +586,57 @@ public class InventoryManager : MonoBehaviour
             if (slot.isEmpty)
             {
                 GameObject itemAdd = Instantiate(ItemPrefab, transform.position, Quaternion.identity);
-                itemAdd.GetComponent<InventoryItem>().item = item;
+
                 itemAdd.transform.SetParent(emptySlot.transform);
                 itemAdd.transform.SetSiblingIndex(4); //If it is the last => it will be faded
                 itemAdd.transform.localPosition = new Vector3(0, 0, 0);
                 slot.isEmpty = false;
 
+                //Initialize data for new item => Fix in the future because it should be init in shop system
+                InventoryItem item = itemAdd.GetComponent<InventoryItem>();
+                item.data.ID = GenerateID();
+                item.data.info = data.info;
+                item.data.amount += 1; //Will change to amount instead of 1
+                item.data.stat = data.info.stat;
 
-                InventoryData.AddItemData(item, 1, slot.index);
+                //Add data to database
+                InventoryData.AddInventoryData(item.data);
 
-                if (item.countable)
+                if (data.info.prop.countable)
                 {
-                    slot.countText.text = InventoryData.GetAmount(item).ToString();
+                    slot.countText.text = InventoryData.GetAmount(data.info).ToString();
                 }
                 break;
             }
-            else if (item.countable)
+            else if (data.info.prop.countable) //If slot is not empty and item is countable
             {
-                InventoryData.AddItemData(item, 1, slot.index);
-                if (slot.ItemType().item.itemName  == item.itemName)
+                InventoryItem item = slot.GetComponentInChildren<InventoryItem>();
+                if (item.data.info.prop.itemName == data.info.prop.itemName)
                 {
-                    slot.countText.text = InventoryData.GetAmount(item).ToString();
+                    item.data.amount += 1;
+                    //Add data to database
+                    InventoryData.AddInventoryData(data);
+
+                    slot.countText.text = item.data.amount.ToString();
                     break;
                 }
             }
         }
     }
-    public void InitializeItemFromData(ItemInfo item) //Similar to AddItem, just remove the line AddItemData. 
+    public int GenerateID()
+    {
+        int randNum;
+        do
+        {
+            randNum = Random.Range(1000, 10000);
+        } while (InventoryData.inventoryData.Exists(x => x.ID == randNum)); 
+        /* Exists is similar to Single:
+         * - Exists used for List
+         * - Single used for array
+         */
+        return randNum;
+    }
+    public void InitializeInventoryItemFromData(ItemBase.ItemData data) //Similar to AddItem, just remove the line AddItemData. 
     {
         foreach (GameObject emptySlot in emptySlots)
         {
@@ -518,26 +644,40 @@ public class InventoryManager : MonoBehaviour
             if (slot.isEmpty)
             {
                 GameObject itemAdd = Instantiate(ItemPrefab, transform.position, Quaternion.identity);
-                itemAdd.GetComponent<InventoryItem>().item = item;
+
+
                 itemAdd.transform.SetParent(emptySlot.transform);
                 itemAdd.transform.SetSiblingIndex(4); //If it is the last => it will be faded
                 itemAdd.transform.localPosition = new Vector3(0, 0, 0);
                 slot.isEmpty = false;
 
+                InventoryItem item = itemAdd.GetComponent<InventoryItem>();
+                item.data = data;
 
-                if (item.countable) //Add item to dictionary to check whether it contains nor not?
+
+                if (data.info.prop.countable)
                 {
-                    slot.countText.text = InventoryData.GetAmount(item).ToString();
+                    slot.countText.text = InventoryData.GetAmount(data.info).ToString();
+                    
                 }
                 break;
             }
-            else if (item.countable)
+        }
+    }
+    public void InitializeEquippedItemFromData(ItemBase.ItemData data)
+    {
+        foreach (EquipmentSlot slot in equipmentSlots)
+        {
+            if (slot.type == data.info.stat.type)
             {
-                if (slot.ItemType().item.itemName == item.itemName)
-                {
-                    slot.countText.text = InventoryData.GetAmount(item).ToString();
-                    break;
-                }
+                GameObject itemAdd = Instantiate(ItemPrefab, transform.position, Quaternion.identity);
+                itemAdd.transform.SetParent(slot.transform);
+                itemAdd.transform.localPosition = Vector3.zero;
+
+                InventoryItem item = itemAdd.GetComponent<InventoryItem>();
+                item.data = data;
+
+                slot.isEquip = true;
             }
         }
     }
@@ -546,7 +686,7 @@ public class InventoryManager : MonoBehaviour
         InventorySlot activeSlot = ActiveSlot.GetComponent<InventorySlot>();
         if (!activeSlot.isEmpty)
         {
-            InventoryData.RemoveItemData(activeSlot.index);
+            InventoryData.RemoveItemData(InventoryData.inventoryData, activeSlot.GetComponentInChildren<InventoryItem>().data.ID);
             activeSlot.DestroyItem();
         }
     }

@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[System.Serializable]
 public class InventoryItem : ItemBase
 {
+    
     private int level;
     public TextMeshProUGUI levelText;
     public int Level
@@ -15,8 +17,8 @@ public class InventoryItem : ItemBase
         {
             this.level = value;
             levelText.text = "+" + value.ToString();
-            Stats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * item.itemLevel * (Level + 1)));
-            NextStats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * item.itemLevel * (Level + 2)));
+            Stats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * data.info.stat.itemLevel * (Level + 1)));
+            NextStats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * data.info.stat.itemLevel * (Level + 2)));
         }
     }
     int stats;
@@ -37,18 +39,21 @@ public class InventoryItem : ItemBase
 
     public override void Start()
     {
-        base.Start();
-        Stats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * item.itemLevel * (Level + 1)));
-        NextStats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * item.itemLevel * (Level + 2)));
-        if (item.countable)
+        if (data.info != null)
         {
-            InventorySlot slot = GetComponentInParent<InventorySlot>();
-            if (slot)
+            base.Start();
+            Stats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * data.info.stat.itemLevel * (Level + 1)));
+            NextStats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * data.info.stat.itemLevel * (Level + 2)));
+            if (data.info.prop.countable)
             {
-                slot.CountText(true);
-            }
+                InventorySlot slot = GetComponentInParent<InventorySlot>();
+                if (slot)
+                {
+                    slot.CountText(true);
+                }
 
-            levelText.gameObject.SetActive(false);
+                levelText.gameObject.SetActive(false);
+            }
         }
 
     }

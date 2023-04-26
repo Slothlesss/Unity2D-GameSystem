@@ -12,10 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Ice 1
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: a281f7f2aaf6cf14f923688fff2d33ff, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 1
-  itemName: LegendaryScroll
-  itemLevel: 1
-  typeOfItem: 7
-  rarity: 2
+  prop:
+    image: {fileID: 21300000, guid: a281f7f2aaf6cf14f923688fff2d33ff, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 1
+    itemName: Ice 1
+    specialStat: Increase <color=blue>10%</color> ice power
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 7
+    rarity: 2
+    itemLevel: 1
+    stats: []

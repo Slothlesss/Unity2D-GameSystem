@@ -12,13 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Uncommon - Necklace
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 1d852391527250b438ff7faa1b8a8dd5, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 0
-  itemName: Necklace
-  specialStat: 
-  itemDescription: Maybe there was a crystal in the center of the necklace. There
-    was a rumor that if you attached the crystal in, the huge power you would get.
-  itemLevel: 10
-  typeOfItem: 5
-  rarity: 1
+  prop:
+    image: {fileID: 21300000, guid: 1d852391527250b438ff7faa1b8a8dd5, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 0
+    itemName: Wood Necklace
+    specialStat: 
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 5
+    rarity: 1
+    itemLevel: 2
+    stats:
+    - type: 0
+      value: 4
+    - type: 0
+      value: 4

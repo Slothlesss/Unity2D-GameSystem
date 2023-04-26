@@ -12,13 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Epic - Shoes
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: f61cdb0ea6c71004aac95d7a0e81bcf8, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 0
-  itemName: Broken Shoes
-  specialStat: 
-  itemDescription: Nothing like this kind of shoes have appeared before, maybe it
-    comes from the future
-  itemLevel: 4
-  typeOfItem: 3
-  rarity: 3
+  prop:
+    image: {fileID: 21300000, guid: f61cdb0ea6c71004aac95d7a0e81bcf8, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 0
+    itemName: Wood Shoes
+    specialStat: 
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 3
+    rarity: 3
+    itemLevel: 4
+    stats:
+    - type: 0
+      value: 30
+    - type: 5
+      value: 350

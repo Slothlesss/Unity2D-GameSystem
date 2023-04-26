@@ -12,13 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Rare - Armor
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: ac5b958bffdd3384e8e0bcb901607658, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 0
-  itemName: Broken Wood Armor
-  specialStat: 
-  itemDescription: Just a broken equipment, it might appeared in the first years
-    of deadly era.
-  itemLevel: 5
-  typeOfItem: 2
-  rarity: 2
+  prop:
+    image: {fileID: 21300000, guid: ac5b958bffdd3384e8e0bcb901607658, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 0
+    itemName: Wood Armor
+    specialStat: 
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 2
+    rarity: 2
+    itemLevel: 3
+    stats:
+    - type: 5
+      value: 100
+    - type: 3
+      value: 15
+    - type: 4
+      value: 15

@@ -87,23 +87,23 @@ public class UpgradeManager : MonoBehaviour
             }
             else
             {
-                upgradeItems[i].item = null;
+                upgradeItems[i].data.info = null;
                 upgradeItems[i].gameObject.SetActive(false);
                 Debug.Log(InventoryManager.Instance.equipmentSlots[i].GetComponentInChildren<InventoryItem>());
             }    
             InventoryItem upgradeItem = upgradeItems[i];
 
             //------Display equip item in upgrade inventory
-            if (equipItem && equipItem.item.typeOfItem == equipmentSlots[i].typeOfSlot) 
+            if (equipItem && equipItem.data.info.stat.type == equipmentSlots[i].type) 
             {
                 upgradeItem.gameObject.SetActive(true);
-                upgradeItem.item = equipItem.item;
+                upgradeItem.data.info = equipItem.data.info;
 
             }
             if (ActiveFunction.name == "UpgradeFunction")
             {
 
-                if (currentEnhancedItem.gameObject.activeInHierarchy && currentEnhancedItem.item == upgradeItem.item) //update level for item in equip inventory
+                if (currentEnhancedItem.gameObject.activeInHierarchy && currentEnhancedItem.data.info == upgradeItem.data.info) //update level for item in equip inventory
                 {
                     upgradeItem.Level = currentEnhancedItem.Level;
                     equipItem.Level = currentEnhancedItem.Level;
@@ -111,12 +111,12 @@ public class UpgradeManager : MonoBehaviour
             }
             else if(ActiveFunction.name == "TransferFunction")
             {
-                if(transferSlot1.gameObject.activeInHierarchy && transferSlot1.item == upgradeItem.item)
+                if(transferSlot1.gameObject.activeInHierarchy && transferSlot1.data.info == upgradeItem.data.info)
                 {
                     upgradeItem.Level = transferSlot1.Level;
                     equipItem.Level = transferSlot1.Level;
                 }
-                if (transferSlot2.gameObject.activeInHierarchy && transferSlot2.item == upgradeItem.item)
+                if (transferSlot2.gameObject.activeInHierarchy && transferSlot2.data.info == upgradeItem.data.info)
                 {
                     upgradeItem.Level = transferSlot2.Level;
                     equipItem.Level = transferSlot2.Level;
@@ -129,10 +129,10 @@ public class UpgradeManager : MonoBehaviour
         if(item.gameObject.activeInHierarchy && ActiveFunction.name == "UpgradeFunction")
         {
             currentEnhancedItem.gameObject.SetActive(true);
-            currentEnhancedItem.item = item.item;
+            currentEnhancedItem.data.info = item.data.info;
             currentEnhancedItem.Level = item.Level;
             afterEnhancedItem.gameObject.SetActive(true);
-            afterEnhancedItem.item = item.item;
+            afterEnhancedItem.data.info = item.data.info;
             afterEnhancedItem.Level = item.Level + 1;
             currentStats.gameObject.SetActive(true);
             afterStats.gameObject.SetActive(true);
@@ -142,7 +142,7 @@ public class UpgradeManager : MonoBehaviour
         }
         else if(ActiveFunction.name == "TransferFunction" && !transferSlot1.gameObject.activeInHierarchy)
         {
-            if(transferSlot2.gameObject.activeInHierarchy && item.item == transferSlot2.item) //Deselect Slot 2
+            if(transferSlot2.gameObject.activeInHierarchy && item.data.info == transferSlot2.data.info) //Deselect Slot 2
             {
                 transferSlot2.gameObject.SetActive(false);
                 slot2Stats.gameObject.SetActive(false);
@@ -150,7 +150,7 @@ public class UpgradeManager : MonoBehaviour
             else
             {
                 transferSlot1.gameObject.SetActive(true);
-                transferSlot1.item = item.item;
+                transferSlot1.data.info = item.data.info;
                 transferSlot1.Level = item.Level;
                 slot1Stats.gameObject.SetActive(true);
                 slot1Stats.text = StatsText(item) + item.Stats.ToString();
@@ -159,30 +159,30 @@ public class UpgradeManager : MonoBehaviour
         }
         else if(ActiveFunction.name == "TransferFunction" )
         {
-            if (item.item != transferSlot1.item && !transferSlot2.gameObject.activeInHierarchy) 
+            if (item.data.info != transferSlot1.data.info && !transferSlot2.gameObject.activeInHierarchy) 
             {
                 transferSlot2.gameObject.SetActive(true);
-                transferSlot2.item = item.item;
+                transferSlot2.data.info = item.data.info;
                 transferSlot2.Level = item.Level;
                 slot2Stats.gameObject.SetActive(true);
                 slot2Stats.text = StatsText(item) + item.Stats.ToString();
 
             }
-            else if(item.item == transferSlot1.item) //DeselectSlot1
+            else if(item.data.info == transferSlot1.data.info) //DeselectSlot1
             {
                 transferSlot1.gameObject.SetActive(false);
                 slot1Stats.gameObject.SetActive(false);
             }
             else if(transferSlot2.gameObject.activeInHierarchy)
             {
-                if(item.item == transferSlot2.item) //DeselectSlot2
+                if(item.data.info == transferSlot2.data.info) //DeselectSlot2
                 {
                     transferSlot2.gameObject.SetActive(false);
                     slot2Stats.gameObject.SetActive(false);
                 }
                 else //swap slot 2
                 {
-                    transferSlot2.item = item.item;
+                    transferSlot2.data.info = item.data.info;
                     transferSlot2.Level = item.Level;
                     slot2Stats.text = StatsText(item) + item.Stats.ToString();
                 }
@@ -216,11 +216,15 @@ public class UpgradeManager : MonoBehaviour
 
     string StatsText(InventoryItem item)
     {
-        if(item.item.typeOfItem.ToString() == "Weapon" || item.item.typeOfItem.ToString() == "Ring" || item.item.typeOfItem.ToString() == "Necklace")
+        if (item.data.info.stat.type.ToString() == "Weapon" ||
+            item.data.info.stat.type.ToString() == "Ring" ||
+            item.data.info.stat.type.ToString() == "Necklace")
         {
             return "Attack: ";
         }
-        if (item.item.typeOfItem.ToString() == "Helmet" || item.item.typeOfItem.ToString() == "Armor" || item.item.typeOfItem.ToString() == "Shoes")
+        if (item.data.info.stat.type.ToString() == "Helmet" ||
+            item.data.info.stat.type.ToString() == "Armor" ||
+            item.data.info.stat.type.ToString() == "Shoes")
         {
             return "Defense: ";
         }

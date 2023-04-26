@@ -6,8 +6,7 @@ using TMPro;
 public class ShopManager : MonoBehaviour
 {
     public enum Currency { Gold, Diamond }
-    private int diamond;
-    private int gold;
+    public PlayerStat playerStat;
 
     [SerializeField] TextMeshProUGUI diamondText;
     [SerializeField] TextMeshProUGUI goldText;
@@ -16,11 +15,11 @@ public class ShopManager : MonoBehaviour
     {
         get
         {
-            return diamond;
+            return playerStat.playerData.diamond;
         }
         set
         {
-            this.diamond = value;
+            playerStat.playerData.diamond = value;
             diamondText.text = value.ToString();
         }
     }
@@ -28,11 +27,11 @@ public class ShopManager : MonoBehaviour
     {
         get
         {
-            return gold;
+            return playerStat.playerData.gold;
         }
         set
         {
-            this.gold = value;
+            playerStat.playerData.gold = value;
             goldText.text = value.ToString();
         }
     }
@@ -65,13 +64,13 @@ public class ShopManager : MonoBehaviour
     public void Awake()
     {
         Instance = this;
-        Diamond = 50000;
-        Gold = 100000;
     }
 
     public void Start()
     {
-        for(int i = 0; i < shopMenu.Length; i++)
+        Diamond = playerStat.playerData.diamond;
+        Gold = playerStat.playerData.gold;
+        for (int i = 0; i < shopMenu.Length; i++)
         {
             DisplayMenu(i);
             if (i < 4)
@@ -90,19 +89,19 @@ public class ShopManager : MonoBehaviour
     {
         if (item.Attempt < item.maxAttempt)
         {
-            if (item.item.typeOfItem != ItemManager.ItemType.Currency) //If item is not Gold or Diamond
+            if (item.data.info.stat.type != ItemManager.ItemType.Currency) //If item is not Gold or Diamond
             {
                 if (item.typeCurrency == Currency.Gold && Gold >= item.price)
                 {
                     Gold -= item.price;
                     item.Attempt++;
-                    InventoryManager.Instance.AddItem(item.item);
+                    InventoryManager.Instance.AddItem(item.data);
                 }
                 else if (item.typeCurrency == Currency.Diamond && Diamond >= item.price)
                 {
                     Diamond -= item.price;
                     item.Attempt++;
-                    InventoryManager.Instance.AddItem(item.item);
+                    InventoryManager.Instance.AddItem(item.data);
                 }
             }
             else //If item you buy is Gold or Diamond
@@ -139,7 +138,7 @@ public class ShopManager : MonoBehaviour
         {
             int randKind = Random.Range(0, shopContainers[idx].kindOfItem.Length);
             int ranItem = Random.Range(0, shopContainers[idx].kindOfItem[randKind].itemInfos.Length);
-            shopSlots[i].item = shopContainers[idx].kindOfItem[randKind].itemInfos[ranItem];
+            shopSlots[i].data.info = shopContainers[idx].kindOfItem[randKind].itemInfos[ranItem];
             int ranCurrency = Random.Range(0, 2);
             shopSlots[i].typeCurrency = ranCurrency == 0 ? Currency.Gold : Currency.Diamond;
             shopSlots[i].Attempt = 0;

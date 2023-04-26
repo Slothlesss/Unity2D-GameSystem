@@ -12,13 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Light 3
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 4d22e661b09af034883224b38a0dbd51, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 1
-  itemName: Light Potion (L)
-  specialStat: Increase <color=yellow>50%</color> Light power
-  itemDescription: The potion was created by collecting from the sunlight in 365
-    days
-  itemLevel: 3
-  typeOfItem: 8
-  rarity: 4
+  prop:
+    image: {fileID: 21300000, guid: 4d22e661b09af034883224b38a0dbd51, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 1
+    itemName: Light 3
+    specialStat: Increase <color=yellow>30%</color> light power
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 8
+    rarity: 4
+    itemLevel: 1
+    stats: []

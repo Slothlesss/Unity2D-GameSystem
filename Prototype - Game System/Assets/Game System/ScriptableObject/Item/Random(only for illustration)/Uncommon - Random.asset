@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Uncommon - Random
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 6c3e9e45885a9fd4083cb162f8d19808, type: 3}
-  color: {r: 0, g: 0, b: 0, a: 1}
-  countable: 0
-  itemName: Necklace
-  itemLevel: 10
-  typeOfItem: 5
-  rarity: 1
+  prop:
+    image: {fileID: 21300000, guid: 6c3e9e45885a9fd4083cb162f8d19808, type: 3}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    countable: 0
+    itemName: 
+    specialStat: 
+    itemDescription: 
+  stat:
+    type: 0
+    rarity: 1
+    itemLevel: 0
+    stats: []

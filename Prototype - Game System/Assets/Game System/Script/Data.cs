@@ -1,62 +1,86 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 [CreateAssetMenu(fileName = "new data", menuName = "Data")]
 public class Data : ScriptableObject
 {
-    [System.Serializable]
-    public class ItemData 
+    public List<ItemBase.ItemData> inventoryData;
+    public List<ItemBase.ItemData> equipmentData;
+    public int GetAmount(ItemInfo info) //Fix in the future, I want to get amout
     {
-        public int ID;
-        public ItemInfo item;
-        public int amount;
-        public ItemData(int _id, ItemInfo _item, int _amount)
+        foreach (ItemBase.ItemData data in inventoryData)
         {
-            ID = _id;
-            item = _item;
-            amount = _amount;
-        }
-    }
-
-    public List<ItemData> itemDatas;
-    public int GetAmount(ItemInfo info)
-    {
-        foreach (ItemData data in itemDatas)
-        {
-            if (data.item == info) //if already have
+            if (data.info == info) //if already have
             {
                 return data.amount;
             }
         }
         return 0;
     }
-    public void AddItemData(ItemInfo info, int amount, int id)
+    public void AddInventoryData(ItemBase.ItemData newData)
     {
-        foreach (ItemData data in itemDatas)
+        foreach (ItemBase.ItemData data in inventoryData)
         {
-            if (data.item == info) //if already have
+            if (data.info == newData.info) //if already have
             {
-                if (info.countable) //if item is countable, otherwise we always added item, so I write at below.
+                if (newData.info.prop.countable) //if item is countable, otherwise we always added item, so I write at below.
                 {
-                    data.amount += amount;
+                    data.amount += newData.amount;
                     return;
                 }
             }
         }
-        ItemData newData = new ItemData(id, info, amount);
-        itemDatas.Add(newData);
+        inventoryData.Add(newData);
     }
-
-    public void RemoveItemData(int ID)
+    public void AddEquipmentData(ItemBase.ItemData data)
     {
-        foreach (ItemData data in itemDatas)
+        equipmentData.Add(data);
+    }
+    public void RemoveItemData(List<ItemBase.ItemData> datas, int ID)
+    {
+        foreach (ItemBase.ItemData data in datas)
         {
             if(data.ID == ID)
             {
-                itemDatas.Remove(data);
+                datas.Remove(data);
                 return;
             }
         }
     }
 
+    public static void SaveData(Data data)
+    {
+        SaveData saveData = new SaveData();
+        saveData.inventoryData = data.inventoryData;
+        saveData.equipmentData = data.equipmentData;
+
+        string json = JsonUtility.ToJson(saveData);
+        string path = Application.persistentDataPath + "/savedata.json";
+        File.WriteAllText(path, json);
+    }
+    public static Data LoadData()
+    {
+        string path = Application.persistentDataPath + "/savedata.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData saveData = JsonUtility.FromJson<SaveData>(json);
+            Data data = ScriptableObject.CreateInstance<Data>();
+            data.inventoryData = saveData.inventoryData;
+            data.equipmentData = saveData.equipmentData;
+            return data;
+        }
+        else
+        {
+            return null;
+        }
+    }
+}
+
+[System.Serializable]
+public class SaveData
+{
+    public List<ItemBase.ItemData> inventoryData;
+    public List<ItemBase.ItemData> equipmentData;
 }

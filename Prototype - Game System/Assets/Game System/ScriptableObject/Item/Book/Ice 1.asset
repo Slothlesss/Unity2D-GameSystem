@@ -12,10 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Ice 1
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 5cbff38b3591b2d49967876b7bfb3419, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 1
-  itemName: Ice 1
-  itemLevel: 1
-  typeOfItem: 9
-  rarity: 2
+  prop:
+    image: {fileID: 21300000, guid: 5cbff38b3591b2d49967876b7bfb3419, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 1
+    itemName: Ice 1
+    specialStat: Increase <color=blue>10%</color> ice knowledge
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 9
+    rarity: 2
+    itemLevel: 1
+    stats: []

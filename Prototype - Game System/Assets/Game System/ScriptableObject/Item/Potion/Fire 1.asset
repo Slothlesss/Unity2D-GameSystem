@@ -12,12 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Fire 1
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 6dba027798d77dd47898357f1885f2ce, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 1
-  itemName: Fire Potion (S)
-  specialStat: Increase <color=red>10%</color> Fire power
-  itemDescription: The potion was created by collecting the magma from Dragon Island
-  itemLevel: 1
-  typeOfItem: 8
-  rarity: 5
+  prop:
+    image: {fileID: 21300000, guid: 6dba027798d77dd47898357f1885f2ce, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 1
+    itemName: Fire 1
+    specialStat: Increase <color=red>10%</color> fire power
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 8
+    rarity: 5
+    itemLevel: 1
+    stats: []

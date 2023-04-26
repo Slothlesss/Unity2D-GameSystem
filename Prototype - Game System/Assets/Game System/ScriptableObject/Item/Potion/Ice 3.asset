@@ -12,13 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa24ec97e3fcf64388c0f2cb2af70d9, type: 3}
   m_Name: Ice 3
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 261e05421898b8a42b34f2c72093e50a, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
-  countable: 1
-  itemName: Ice Potion (L)
-  specialStat: Increase <color=blue>50%</color> Ice power
-  itemDescription: The potion was created by collecting from the deep ice cave in
-    Blizzare Island
-  itemLevel: 3
-  typeOfItem: 8
-  rarity: 2
+  prop:
+    image: {fileID: 21300000, guid: 261e05421898b8a42b34f2c72093e50a, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    countable: 1
+    itemName: Ice 3
+    specialStat: Increase <color=blue>30%</color> ice power
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  stat:
+    type: 8
+    rarity: 2
+    itemLevel: 1
+    stats: []
