@@ -89,7 +89,7 @@ public class ShopManager : MonoBehaviour
     {
         if (item.Attempt < item.maxAttempt)
         {
-            if (item.data.info.stat.type != ItemManager.ItemType.Currency) //If item is not Gold or Diamond
+            if (item.data.info.baseStat.type != ItemManager.ItemType.Currency) //If item is not Gold or Diamond
             {
                 if (item.typeCurrency == Currency.Gold && Gold >= item.price)
                 {
@@ -138,7 +138,10 @@ public class ShopManager : MonoBehaviour
         {
             int randKind = Random.Range(0, shopContainers[idx].kindOfItem.Length);
             int ranItem = Random.Range(0, shopContainers[idx].kindOfItem[randKind].itemInfos.Length);
+
             shopSlots[i].data.info = shopContainers[idx].kindOfItem[randKind].itemInfos[ranItem];
+            shopSlots[i].UpdateItemImage();
+            
             int ranCurrency = Random.Range(0, 2);
             shopSlots[i].typeCurrency = ranCurrency == 0 ? Currency.Gold : Currency.Diamond;
             shopSlots[i].Attempt = 0;

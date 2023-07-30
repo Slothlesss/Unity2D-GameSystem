@@ -23,12 +23,12 @@ MonoBehaviour:
       - Write something here
 
       ...'
-  stat:
+  baseStat:
     type: 6
     rarity: 0
-    itemLevel: 1
+    requiredLevel: 1
     stats:
     - type: 0
-      value: 1
+      value: 10
     - type: 0
-      value: 1
+      value: 10

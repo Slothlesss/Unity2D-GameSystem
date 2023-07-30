@@ -7,55 +7,32 @@ using TMPro;
 [System.Serializable]
 public class InventoryItem : ItemBase
 {
-    
-    private int level;
     public TextMeshProUGUI levelText;
-    public int Level
-    {
-        get { return level; }
-        set
-        {
-            this.level = value;
-            levelText.text = "+" + value.ToString();
-            Stats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * data.info.stat.itemLevel * (Level + 1)));
-            NextStats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * data.info.stat.itemLevel * (Level + 2)));
-        }
-    }
-    int stats;
-    public int Stats
-    {
-        get
-        {
-            return stats;
-
-        }
-        set
-        {
-            this.stats = value;
-        }
-    }
-
-    public int NextStats;
 
     public override void Start()
     {
-        if (data.info != null)
+        UpdateItemImage();
+    }
+
+    public override void UpdateItemImage()
+    {
+        base.UpdateItemImage();
+        
+        if (data.info.prop.countable)
         {
-            base.Start();
-            Stats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * data.info.stat.itemLevel * (Level + 1)));
-            NextStats = Mathf.CeilToInt(Mathf.Sqrt(SetPriceByRarity() * data.info.stat.itemLevel * (Level + 2)));
-            if (data.info.prop.countable)
+            InventorySlot slot = GetComponentInParent<InventorySlot>();
+            if (slot)
             {
-                InventorySlot slot = GetComponentInParent<InventorySlot>();
-                if (slot)
-                {
-                    slot.CountText(true);
-                }
-
-                levelText.gameObject.SetActive(false);
+                slot.CountText(true);
             }
-        }
 
+            levelText.gameObject.SetActive(false);
+        }
+        else
+        {
+            levelText.gameObject.SetActive(true);
+            levelText.text = "+" + data.currentLevel.ToString();
+        }
     }
 
 

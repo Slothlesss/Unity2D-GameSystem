@@ -20,14 +20,16 @@ public class CraftRequirement : MonoBehaviour
     public int numMeetRequirement;
 
 
-    private ItemBase.ItemData data;
+    private InventoryItem item;
     private void OnEnable()
     {
 
         craftSlots = craftSlotPool.GetComponentsInChildren<CraftSlot>();
 
-        data = resultSlot.GetComponent<InventoryItem>().data;
-        data.info = resultItem; //Update the image of result
+        item = resultSlot.GetComponent<InventoryItem>();
+        item.data.info = resultItem; //Update the image of result
+        item.UpdateItemImage();
+        
 
         UpdateCraftSlot();
     }
@@ -57,7 +59,7 @@ public class CraftRequirement : MonoBehaviour
         {
             InventoryManager.Instance.RemoveAmountOfItem(requireMaterial[i].info, requireMaterial[i].amount);
         }
-        InventoryManager.Instance.AddAmountOfItem(data, 1);
+        InventoryManager.Instance.AddAmountOfItem(item.data, 1);
     }
 
     public bool CanCraft()

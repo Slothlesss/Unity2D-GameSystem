@@ -35,13 +35,13 @@ public class ShopItem : ItemBase
         if (typeCurrency == ShopManager.Currency.Gold)
         {
             currencyImage.sprite = ShopManager.Instance.currencySprites[0];
-            price = base.data.info.stat.itemLevel * 10 * base.SetPriceByRarity();
+            price = base.data.info.baseStat.requiredLevel * 10 * base.SetPriceByRarity();
             priceText.text = price.ToString();
         }
         else
         {
             currencyImage.sprite = ShopManager.Instance.currencySprites[1];
-            price = base.data.info.stat.itemLevel * base.SetPriceByRarity();
+            price = base.data.info.baseStat.requiredLevel * base.SetPriceByRarity();
             priceText.text = price.ToString();
         }
     }

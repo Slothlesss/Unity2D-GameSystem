@@ -24,7 +24,7 @@ public class ItemInfo : ScriptableObject
     {
         public ItemManager.ItemType type;
         public ItemManager.Rarity rarity;
-        public int itemLevel = 1;
+        public int requiredLevel = 1;
         [SerializeField]
         public Stat[] stats;
 
@@ -34,9 +34,21 @@ public class ItemInfo : ScriptableObject
             public ItemManager.StatType type;
             public float value;
 
+            public float GetNextValue()
+            {
+                if (type == ItemManager.StatType.AttackRange || type == ItemManager.StatType.AttackSpeed)
+                {
+                    return value;
+                }
+                else
+                {
+                    return Mathf.CeilToInt(value * 1.1f);
+                }
+            }
+
         }
     }
     public ItemProperties prop;
-    public ItemStat stat;
+    public ItemStat baseStat;
   
 }

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: 
   level: 1
-  gold: 1000000
-  diamond: 100000
+  gold: 779900
+  diamond: 96974
   baseStats:
   - type: 0
     value: 2
@@ -30,14 +30,14 @@ MonoBehaviour:
     value: 2
   additionalStats:
   - type: 0
-    value: 0
+    value: 120
   - type: 2
-    value: 0
+    value: 0.7
   - type: 1
-    value: 0
+    value: 1
   - type: 5
-    value: 0
+    value: 564
   - type: 3
-    value: 0
+    value: 27
   - type: 4
-    value: 0
+    value: 24

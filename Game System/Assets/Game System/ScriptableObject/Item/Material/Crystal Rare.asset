@@ -19,8 +19,8 @@ MonoBehaviour:
     itemName: Crystal Rare
     specialStat: 
     itemDescription: 
-  stat:
-    type: 10
+  baseStat:
+    type: 0
     rarity: 2
-    itemLevel: 1
+    requiredLevel: 1
     stats: []

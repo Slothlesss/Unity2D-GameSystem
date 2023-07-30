@@ -8,35 +8,19 @@ using TMPro;
 public class GameManager : Singleton<GameManager>
 {
     public GameObject systemPool;
-    public GameObject optionButtonPool;
-    Dictionary<string, UISystemView> viewDic = new Dictionary<string, UISystemView>();
-    Toggle ActiveToggle;
+    UISystemView[] systemViews;
     private void Awake()
     {
-
-        UISystemView[] systemViews = systemPool.GetComponentsInChildren<UISystemView>();
-        foreach (UISystemView view in systemViews)
-        {
-            viewDic.Add(view.name, view);
-            view.gameObject.SetActive(false);
-        }
-        ActiveToggle = optionButtonPool.GetComponentsInChildren<Toggle>().Single(i => i.isOn);
-        viewDic[ActiveToggle.name].gameObject.SetActive(true);
-       
+        systemViews = systemPool.GetComponentsInChildren<UISystemView>();
+        DisplaySystem(0);
     }
-    private void Update()
+    public void DisplaySystem(int idx)
     {
-        ActiveToggle = optionButtonPool.GetComponentsInChildren<Toggle>().Single(i => i.isOn);
-        viewDic[ActiveToggle.name].gameObject.SetActive(true);
-    }
-
-
-    public void DisplaySystem()
-    {
-        foreach (KeyValuePair<string, UISystemView> view in viewDic)
+        for (int i = 0; i < systemViews.Length; i++)
         {
-            view.Value.gameObject.SetActive(false);
+            systemViews[i].gameObject.SetActive(false);
         }
+        systemViews[idx].gameObject.SetActive(true);
 
     }
 

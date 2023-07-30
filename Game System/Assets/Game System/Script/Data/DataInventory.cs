@@ -18,7 +18,7 @@ public class DataInventory : ScriptableObject
         }
         return 0;
     }
-    public void UpdateInventoryData(ItemBase.ItemData newData)
+    public void AddInventoryData(ItemBase.ItemData newData)
     {
         foreach (ItemBase.ItemData data in inventoryData)
         {
@@ -33,8 +33,6 @@ public class DataInventory : ScriptableObject
         }
         inventoryData.Add(newData);
     }
-
-
     public void AddEquipmentData(ItemBase.ItemData data)
     {
         equipmentData.Add(data);
@@ -49,6 +47,12 @@ public class DataInventory : ScriptableObject
                 return;
             }
         }
+    }
+
+    public void UpdateStatItemData(int ID, ItemBase.ItemData newData)
+    {
+        ItemBase.ItemData currentData = equipmentData.Find(i => i.ID == ID);
+        currentData = newData;
     }
 
     public static void SaveData(DataInventory data) //To save the data to local

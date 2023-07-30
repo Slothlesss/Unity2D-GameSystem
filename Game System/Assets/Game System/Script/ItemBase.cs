@@ -8,86 +8,86 @@ using TMPro;
 [System.Serializable]
 public class ItemBase : MonoBehaviour
 {
-
-    [System.Serializable]
-    public class ItemData
-    {
-        public int ID;
-        public ItemInfo info; //Item Info will have base stats of item => when create Item GameObject, the gameObject will have base stat and can fix it.
-        public int amount = 0;
-        public ItemInfo.ItemStat stat;
-
-        public ItemData(ItemData data)
-        {
-            ID = data.ID;
-            info = data.info;
-            amount = data.amount;
-            stat = data.stat;
-        }
-        public int GetAmount()
-        {
-            return amount;
-        }
-        public int GetID()
-        {
-            return ID;
-        }
-
-    }
-    public ItemData data;
-
     [SerializeField] public Image img;
     [SerializeField] public Image backGround;
     [SerializeField] public Image frame;
 
-    // Start is called before the first frame update
-    public virtual void Start()
-    {
+    //Question: Why we need to create a ItemData class? Why don't we put everything like ID, info, amount, currentStat outside?
+    //Answer: Because when we want to use operation = (to copy these values), we just need to use data = data instead of id = id, info = info, ...
 
-        if (data.info != null)
-        {
-            img.sprite = data.info.prop.image;
-            img.color = Color.white;
-            CheckRarity();
-        }
+    [System.Serializable]
+    public class ItemData 
+    {
+        public int ID;
+        public ItemInfo info; //Item Info will have base stats of item => when create Item GameObject, the gameObject will have base baseStat and can fix it.
+        public int amount = 0;
+        public int currentLevel = 0;
+        public ItemInfo.ItemStat.Stat[] currentStat;
 
 
     }
-    // Update is called once per frame
-    public virtual void Update()
+    public ItemData data;
+
+    //Question: Why we need to use ItemInfo.ItemStat currentStat but not use info.stat ?
+    //Answer: Because Scriptable Object is read-only, we can't add value to info.stat.
+    //        Therefore, we copy all the stats from info to current stats.
+    //        After that, if we want to upgrade, the value will be added to current stat, not to info.stat.
+
+    
+    
+    public virtual void Start()
+    {
+        UpdateItemImage();
+    }
+
+    public virtual void UpdateItemImage()
+    {
+        if (data.info == null) return;
+
+        img.sprite = data.info.prop.image;
+        img.color = Color.white;
+        CheckRarity();
+
+    }
+
+    // Well, we shouldn't use Update() too much, which affects the fps
+    // Therefore, when item.data.info is changed, we call the function "UpdateItemImage()" to update the sprite, color, background, frame, level text,...
+    // Instead of calling it each frame by using Update()
+    /*public virtual void Update()
     {
         Start();
     }
+    */
 
     public int SetPriceByRarity()
     {
         if (data.info != null)
         {
-            if (data.info.stat.rarity == ItemManager.Rarity.Common)
+            if (data.info.baseStat.rarity == ItemManager.Rarity.Common)
             {
                 return 1;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.Uncommon)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.Uncommon)
             {
                 return 5;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.Rare)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.Rare)
             {
                 return 20;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.Epic)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.Epic)
             {
                 return 100;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.Mythical)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.Mythical)
             {
                 return 500;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.Legendary)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.Legendary)
             {
                 return 2000;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.God)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.God)
             {
                 return 10000;
             }
@@ -101,37 +101,37 @@ public class ItemBase : MonoBehaviour
     {
         if (data.info != null)
         {
-            if (data.info.stat.rarity == ItemManager.Rarity.Common)
+            if (data.info.baseStat.rarity == ItemManager.Rarity.Common)
             {
                 backGround.sprite = ItemManager.Instance.rarityBG[0].background;
                 frame.sprite = ItemManager.Instance.rarityBG[0].frame;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.Uncommon)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.Uncommon)
             {
                 backGround.sprite = ItemManager.Instance.rarityBG[1].background;
                 frame.sprite = ItemManager.Instance.rarityBG[1].frame;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.Rare)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.Rare)
             {
                 backGround.sprite = ItemManager.Instance.rarityBG[2].background;
                 frame.sprite = ItemManager.Instance.rarityBG[2].frame;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.Epic)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.Epic)
             {
                 backGround.sprite = ItemManager.Instance.rarityBG[3].background;
                 frame.sprite = ItemManager.Instance.rarityBG[3].frame;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.Mythical)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.Mythical)
             {
                 backGround.sprite = ItemManager.Instance.rarityBG[4].background;
                 frame.sprite = ItemManager.Instance.rarityBG[4].frame;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.Legendary)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.Legendary)
             {
                 backGround.sprite = ItemManager.Instance.rarityBG[5].background;
                 frame.sprite = ItemManager.Instance.rarityBG[5].frame;
             }
-            else if (data.info.stat.rarity == ItemManager.Rarity.God)
+            else if (data.info.baseStat.rarity == ItemManager.Rarity.God)
             {
                 backGround.sprite = ItemManager.Instance.rarityBG[6].background;
                 frame.sprite = ItemManager.Instance.rarityBG[6].frame;

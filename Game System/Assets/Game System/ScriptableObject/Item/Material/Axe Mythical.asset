@@ -19,8 +19,8 @@ MonoBehaviour:
     itemName: Axe Mythical
     specialStat: 
     itemDescription: 
-  stat:
-    type: 10
+  baseStat:
+    type: 0
     rarity: 4
-    itemLevel: 1
+    requiredLevel: 1
     stats: []

@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class StatUI : MonoBehaviour
+public class UIStat : MonoBehaviour
 {
     public TextMeshProUGUI statText;
     public Image statImage;

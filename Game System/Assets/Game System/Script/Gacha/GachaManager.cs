@@ -11,7 +11,7 @@ public class GachaManager : MonoBehaviour
     [SerializeField] Transform cardParent;
     [SerializeField] List<TextMeshProUGUI> UIRate;
     [SerializeField] GameObject rewardGO;
-    ItemBase.ItemData item;
+    InventoryItem item;
 
     [SerializeField] Button oneTimeButton;
     [SerializeField] Button tenTimeButton;
@@ -59,7 +59,7 @@ public class GachaManager : MonoBehaviour
             rewardGOs[0].transform.SetParent(cardParent);
         }
 
-        item = rewardGOs[0].GetComponent<InventoryItem>().data;
+        item.data = rewardGOs[0].GetComponent<InventoryItem>().data;
 
 
         //Check prize
@@ -70,7 +70,7 @@ public class GachaManager : MonoBehaviour
             totalRate += gacha[i].rate;
             if (rnd <= totalRate)
             {
-                item.info = Reward(gacha[i].rarity).info;
+                item.data.info = Reward(gacha[i].rarity).info;
                 return;
             }
             
@@ -91,7 +91,7 @@ public class GachaManager : MonoBehaviour
             }
 
 
-            item = rewardGOs[i].GetComponent<InventoryItem>().data;
+            item.data = rewardGOs[i].GetComponent<InventoryItem>().data;
 
 
             //Check prize
@@ -102,7 +102,8 @@ public class GachaManager : MonoBehaviour
                 totalRate += gacha[j].rate;
                 if (rnd <= totalRate)
                 {
-                    item.info = Reward(gacha[j].rarity).info;
+                    item.data.info = Reward(gacha[j].rarity).info;
+                    item.UpdateItemImage();
                     break;
                 }
             }

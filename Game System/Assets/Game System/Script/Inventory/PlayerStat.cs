@@ -2,25 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStat : MonoBehaviour
+public class PlayerStat : Singleton<PlayerStat>
 {
     public DataPlayer playerData;
 
     public GameObject statsUIGroup;
-    public StatUI[] statsUI;
-    private void Awake()
+    public UIStat[] statsUI;
+    public void Awake()
     {
         if (DataPlayer.LoadData() != null)
         {
             playerData = DataPlayer.LoadData();
         }
         //StartCoroutine(SaveDataPeriodically(10.0f)); //The data will be saved automatically once after 10 sec.
-        statsUI = statsUIGroup.GetComponentsInChildren<StatUI>();
-        UpdatePlayerStat();
+        statsUI = statsUIGroup.GetComponentsInChildren<UIStat>();
+        InitializePlayerStatFromData();
+
+
         string path = Application.persistentDataPath + "/playerData.json";
         print(path);
     }
-    void UpdatePlayerStat()
+    void InitializePlayerStatFromData()
     {
         //---Update total stats--- (this one will overlap the previous step)
         for (int i = 0; i < playerData.baseStats.Length; i++)
@@ -46,11 +48,11 @@ public class PlayerStat : MonoBehaviour
     }
     public void AddItemStat(InventoryItem item)
     {
-        int statLen = item.data.stat.stats.Length;
+        int statLen = item.data.currentStat.Length;
         for (int i = 0; i < statLen; i++)
         {
-            ItemManager.StatType itemType = item.data.stat.stats[i].type;
-            float itemStat = item.data.stat.stats[i].value;
+            ItemManager.StatType itemType = item.data.currentStat[i].type;
+            float itemStat = item.data.currentStat[i].value;
             if (itemType == ItemManager.StatType.AttackRange
                 || itemType == ItemManager.StatType.AttackSpeed)
             {
@@ -61,15 +63,15 @@ public class PlayerStat : MonoBehaviour
                 playerData.additionalStats[GetIndex(itemType)].value += itemStat;
             }
         }
-        UpdatePlayerStat();
+        InitializePlayerStatFromData();
     }
     public void RemoveItemStat(InventoryItem item)
     {
-        int statLen = item.data.stat.stats.Length;
+        int statLen = item.data.currentStat.Length;
         for (int i = 0; i < statLen; i++)
         {
-            ItemManager.StatType itemType = item.data.stat.stats[i].type;
-            float itemStat = item.data.stat.stats[i].value;
+            ItemManager.StatType itemType = item.data.currentStat[i].type;
+            float itemStat = item.data.currentStat[i].value;
             if (itemType == ItemManager.StatType.AttackRange
                 || itemType == ItemManager.StatType.AttackSpeed)
             {
@@ -80,7 +82,7 @@ public class PlayerStat : MonoBehaviour
                 playerData.additionalStats[GetIndex(itemType)].value -= itemStat;
             }
         }
-        UpdatePlayerStat();
+        InitializePlayerStatFromData();
     }
     public int GetIndex(ItemManager.StatType type)
     {

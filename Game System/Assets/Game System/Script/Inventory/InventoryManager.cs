@@ -53,7 +53,7 @@ public class InventoryManager : Singleton<InventoryManager>
 
     public GameObject verticalSlash;
     public GameObject itemViewStatGroup;
-    public StatUI[] itemStats;
+    public UIStat[] itemStats;
     public GameObject inventoryField;
     public GameObject equipField;
 
@@ -64,6 +64,7 @@ public class InventoryManager : Singleton<InventoryManager>
     public int startIdx = 0;
 
     
+
     private void Awake()
     {
         if (DataInventory.LoadData() != null)
@@ -71,9 +72,9 @@ public class InventoryManager : Singleton<InventoryManager>
             InventoryData = DataInventory.LoadData();
         }
 
-        //Hide all the item stats in stat view
-        itemStats = itemViewStatGroup.GetComponentsInChildren<StatUI>();
-        foreach (StatUI stat in itemStats)
+        //Hide all the item stats in baseStat view
+        itemStats = itemViewStatGroup.GetComponentsInChildren<UIStat>();
+        foreach (UIStat stat in itemStats)
         {
             stat.gameObject.SetActive(false);
         }
@@ -81,13 +82,27 @@ public class InventoryManager : Singleton<InventoryManager>
         SpawnItemsFromData();
     }
 
+    private void OnEnable()
+    {
+        foreach(EquipmentSlot slot in equipmentSlots)
+        {
+            InventoryItem item = slot.GetComponentInChildren<InventoryItem>();
+            if (item != null)
+            {
+                item.UpdateItemImage(); 
+            }
+            
+        }
+    }
+
+
     private void Update()
     {
         //Just check that InventorySystem is active or not => I just want to ultilize the customCursor instead of creating new parameter "GameObject inventorySystem"
         if (!customCursor.gameObject.activeInHierarchy) return;
 
         //Overall:
-        //- If there is any slot is clicked => Display the item stat
+        //- If there is any slot is clicked => Display the item baseStat
         //- If users use right click to the active slot => They will take the item
         if (Grid.GetComponent<ToggleGroup>().AnyTogglesOn() == true)
         {
@@ -183,28 +198,28 @@ public class InventoryManager : Singleton<InventoryManager>
         }
         //----2. Check type of item => if (item == Potion, Book, Scroll, Material => only show Image, no level, no rarity)
         // or you can set your own type
-        if (currentItem.data.info.stat.type == ItemManager.ItemType.Potion
-            || currentItem.data.info.stat.type == ItemManager.ItemType.Book
-            || currentItem.data.info.stat.type == ItemManager.ItemType.Scroll
-            || currentItem.data.info.stat.type == ItemManager.ItemType.Material)
+        if (currentItem.data.info.baseStat.type == ItemManager.ItemType.Potion
+            || currentItem.data.info.baseStat.type == ItemManager.ItemType.Book
+            || currentItem.data.info.baseStat.type == ItemManager.ItemType.Scroll
+            || currentItem.data.info.baseStat.type == ItemManager.ItemType.Material)
         {
             verticalSlash.SetActive(false);
             itemViewStatGroup.SetActive(false);
         }
-        else if (currentItem.data.info.stat.type != ItemManager.ItemType.Currency) //----3. If Item is Weapon -> Ring
+        else if (currentItem.data.info.baseStat.type != ItemManager.ItemType.Currency) //----3. If Item is Weapon -> Ring
         {
             verticalSlash.SetActive(true);
             itemViewStatGroup.SetActive(true);
-            foreach (StatUI stat in itemStats)
+            foreach (UIStat stat in itemStats)
             {
                 stat.gameObject.SetActive(false);
             }
-            int statLen = currentItem.data.stat.stats.Length;
+            int statLen = currentItem.data.currentStat.Length;
             for (int i = 0; i < statLen; i++)
             {
                 itemStats[i].gameObject.SetActive(true);
-                itemStats[i].statImage.sprite = CheckStatImage(currentItem.data.stat.stats[i]);
-                itemStats[i].statText.text = currentItem.data.stat.stats[i].value.ToString();
+                itemStats[i].statImage.sprite = CheckStatImage(currentItem.data.currentStat[i]);
+                itemStats[i].statText.text = currentItem.data.currentStat[i].value.ToString();
             }
         }
 
@@ -215,7 +230,7 @@ public class InventoryManager : Singleton<InventoryManager>
         itemImageUI.sprite = currentItem.img.sprite;
         if (itemViewStatGroup.activeInHierarchy)
         {
-            itemLevel.text = "Level " + currentItem.data.info.stat.itemLevel.ToString();
+            itemLevel.text = "Require Level " + currentItem.data.info.baseStat.requiredLevel.ToString();
             itemRarity.text = CheckRarity(currentItem);
         }
         if (itemSpecialStat.gameObject.activeInHierarchy)
@@ -256,7 +271,7 @@ public class InventoryManager : Singleton<InventoryManager>
     }
     string CheckRarity(InventoryItem item)
     {
-        switch (item.data.info.stat.rarity.ToString())
+        switch (item.data.info.baseStat.rarity.ToString())
         {
             case "God":
                 return "<color=#FF69B4>God</color>";
@@ -321,7 +336,7 @@ public class InventoryManager : Singleton<InventoryManager>
         //Step 1: Check Slot that has similar types with carrying item => Ex: Sword fits Weapon slot
         EquipmentSlot equipmentSlot = null;
         //Check the equip slot that have the same type with item
-        EquipmentSlot equipableSlot = equipmentSlots.Single(i => i.type == customCursor.GetComponentInChildren<InventoryItem>().data.info.stat.type);
+        EquipmentSlot equipableSlot = equipmentSlots.Single(i => i.type == customCursor.GetComponentInChildren<InventoryItem>().data.info.baseStat.type);
         DisplayYellowField(ref equipmentSlot, equipableSlot);
 
         //Step 2: Put Item into Slot
@@ -348,7 +363,7 @@ public class InventoryManager : Singleton<InventoryManager>
 
                     //Update the database
                     InventoryData.RemoveItemData(InventoryData.equipmentData, itemEquip.data.ID);
-                    InventoryData.UpdateInventoryData(itemEquip.data);
+                    InventoryData.AddInventoryData(itemEquip.data);
 
                     InventoryData.RemoveItemData(InventoryData.inventoryData, getItem.data.ID);
                     InventoryData.AddEquipmentData(getItem.data);
@@ -393,7 +408,7 @@ public class InventoryManager : Singleton<InventoryManager>
                             equipableSlot.ShowCannotEquip();
 
                             InventoryData.RemoveItemData(InventoryData.equipmentData, getItem.data.ID);
-                            InventoryData.UpdateInventoryData(getItem.data);
+                            InventoryData.AddInventoryData(getItem.data);
 
                             playerStat.RemoveItemStat(getItem);
 
@@ -576,10 +591,11 @@ public class InventoryManager : Singleton<InventoryManager>
                 item.data.ID = GenerateID();
                 item.data.info = data.info;
                 item.data.amount += amount;
-                item.data.stat = data.info.stat;
+                item.data.currentStat = data.info.baseStat.stats;
 
+                item.UpdateItemImage();
                 //Add data to database
-                InventoryData.UpdateInventoryData(item.data);
+                InventoryData.AddInventoryData(item.data);
 
                 if (data.info.prop.countable)
                 {
@@ -594,7 +610,7 @@ public class InventoryManager : Singleton<InventoryManager>
                 {
                     item.data.amount += amount;
                     //Add data to database
-                    InventoryData.UpdateInventoryData(item.data);
+                    InventoryData.AddInventoryData(item.data);
 
                     slot.countText.text = item.data.amount.ToString();
                     break;
@@ -622,7 +638,7 @@ public class InventoryManager : Singleton<InventoryManager>
                     else if (item.data.amount > 0)
                     {
                         //Update to database
-                        InventoryData.UpdateInventoryData(item.data);
+                        InventoryData.AddInventoryData(item.data);
                         slot.countText.text = item.data.amount.ToString();
                     }
                     break;
@@ -684,6 +700,7 @@ public class InventoryManager : Singleton<InventoryManager>
 
                 InventoryItem item = itemAdd.GetComponent<InventoryItem>();
                 item.data = data;
+                item.UpdateItemImage();
 
 
                 if (data.info.prop.countable)
@@ -699,7 +716,7 @@ public class InventoryManager : Singleton<InventoryManager>
     {
         foreach (EquipmentSlot slot in equipmentSlots)
         {
-            if (slot.type == data.info.stat.type)
+            if (slot.type == data.info.baseStat.type)
             {
                 GameObject itemAdd = Instantiate(ItemPrefab, transform.position, Quaternion.identity);
                 itemAdd.transform.SetParent(slot.transform);
@@ -707,6 +724,7 @@ public class InventoryManager : Singleton<InventoryManager>
 
                 InventoryItem item = itemAdd.GetComponent<InventoryItem>();
                 item.data = data;
+                item.UpdateItemImage();
 
                 slot.isEquip = true;
             }

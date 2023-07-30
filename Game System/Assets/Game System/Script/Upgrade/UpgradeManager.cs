@@ -6,260 +6,154 @@ using System.Linq;
 using UnityEngine.UI;
 public class UpgradeManager : MonoBehaviour
 {
-    public InventoryItem[] upgradeItems;
-    public EquipmentSlot[] equipmentSlots;
-    public GameObject upgradeInventory;
+    [SerializeField] Toggle upgradeSystemButton;
+    [SerializeField] private List<InventoryItem> equipItems;
+    [SerializeField] private GameObject equipItemPool;
 
-    [Header("UpgradeFunction")]
+    [SerializeField] private InventoryItem upgradeItem;
+    [SerializeField] private InventoryItem previewItem;
 
-    public InventoryItem currentEnhancedItem;
-    public TextMeshProUGUI currentStats;
+    [SerializeField] private TextMeshProUGUI[] currentStatTexts;
+    [SerializeField] private TextMeshProUGUI[] previewStatTexts;
 
-    public InventoryItem afterEnhancedItem;
-    public TextMeshProUGUI afterStats;
+    private int currentIdx;
 
-    [Header("TransferFunction")]
-    public InventoryItem transferSlot1; 
-    public TextMeshProUGUI slot1Stats;
-    public InventoryItem transferSlot2;
-    public TextMeshProUGUI slot2Stats;
-
-    [Header("ViewController")]
-    public GameObject TogglePool;
-    public GameObject ViewPool;
-    Dictionary<string, UIUpgradeView> viewsDictionary = new Dictionary<string, UIUpgradeView>(); //Upgrade, Transfer
-                                                                                                //Must use UIUpgradeView becausec if using UISystemView => SystemPool will get it.
-
-
-    Toggle ActiveFunction;
     private void Awake()
     {
-        //Set inventory
-        upgradeItems = upgradeInventory.GetComponentsInChildren<InventoryItem>();
-        equipmentSlots = upgradeInventory.GetComponentsInChildren<EquipmentSlot>();
-        //SetAcitve all item in upgradetems to False after GetComponent, because if you SetActive(false) before running, GetComponent does not work.
-        foreach (InventoryItem item in upgradeItems)
+        equipItems = equipItemPool.GetComponentsInChildren<InventoryItem>().ToList();
+        foreach(InventoryItem item in equipItems)
         {
             item.gameObject.SetActive(false);
         }
 
+        upgradeSystemButton.onValueChanged.AddListener(delegate {
+            GetEquipItem();
+            UndisplayItem();
+        });
+
     }
 
-    private void Start()
+    private void GetEquipItem()
     {
-        if (TogglePool.activeInHierarchy)
+        for(int i = 0; i < 6; i++)
         {
-
-            UIUpgradeView[] systemViews = ViewPool.GetComponentsInChildren<UIUpgradeView>();
-            //SetAcitve all views to False after GetComponent, because if you SetActive(false) before running, GetComponent does not work.
-            foreach (UIUpgradeView view in systemViews)
+            EquipmentSlot slot = InventoryManager.Instance.equipmentSlots[i];
+            if (InventoryManager.Instance.equipmentSlots[i].isEquip)
             {
-                viewsDictionary.Add(view.name, view);
-                view.gameObject.SetActive(false);
-            }
-            ActiveFunction = TogglePool.GetComponentsInChildren<Toggle>().Single(i => i.isOn);
-        }
-    }
-
-
-
-    private void Update()
-    {
-        if(TogglePool.activeInHierarchy)
-        {
-            ActiveFunction = TogglePool.GetComponentsInChildren<Toggle>().Single(i => i.isOn);
-
-            viewsDictionary[ActiveFunction.name].gameObject.SetActive(true);
-        }
-        else
-        {
-            ReleaseItemInView();
-        }
-
-        for (int i = 0; i < 6; i++)
-        {
-            InventoryItem equipItem = null;
-            if (InventoryManager.Instance.equipmentSlots[i].GetComponentInChildren<InventoryItem>() != null)
-            {
-                equipItem = InventoryManager.Instance.equipmentSlots[i].GetComponentInChildren<InventoryItem>();
+                equipItems[i].gameObject.SetActive(true);
+                equipItems[i].data = slot.GetComponentInChildren<InventoryItem>().data;
             }
             else
             {
-                upgradeItems[i].data.info = null; //Update the slot
-                upgradeItems[i].gameObject.SetActive(false);
-            }    
-            InventoryItem upgradeItem = upgradeItems[i];
-
-            //------Display equip item in upgrade inventory
-            if (equipItem && equipItem.data.info.stat.type == equipmentSlots[i].type) 
-            {
-                upgradeItem.gameObject.SetActive(true);
-                upgradeItem.data.info = equipItem.data.info;
-            }
-
-
-            if (ActiveFunction.name == "UpgradeFunction")
-            {
-
-                if (currentEnhancedItem.gameObject.activeInHierarchy && currentEnhancedItem.data.info == upgradeItem.data.info) //update level for item in equip inventory
-                {
-                    upgradeItem.Level = currentEnhancedItem.Level;
-                    equipItem.Level = currentEnhancedItem.Level;
-                }
-            }
-            else if(ActiveFunction.name == "TransferFunction")
-            {
-                if(transferSlot1.gameObject.activeInHierarchy && transferSlot1.data.info == upgradeItem.data.info)
-                {
-                    upgradeItem.Level = transferSlot1.Level;
-                    equipItem.Level = transferSlot1.Level;
-                }
-                if (transferSlot2.gameObject.activeInHierarchy && transferSlot2.data.info == upgradeItem.data.info)
-                {
-                    upgradeItem.Level = transferSlot2.Level;
-                    equipItem.Level = transferSlot2.Level;
-                }
+                equipItems[i].gameObject.SetActive(false);
             }
         }
-    }
-    public void OnSelectItem(InventoryItem item)
-    {
-        if(item.gameObject.activeInHierarchy && ActiveFunction.name == "UpgradeFunction")
-        {
-            currentEnhancedItem.gameObject.SetActive(true);
-            currentEnhancedItem.data.info = item.data.info;
-            currentEnhancedItem.Level = item.Level;
-            afterEnhancedItem.gameObject.SetActive(true);
-            afterEnhancedItem.data.info = item.data.info;
-            afterEnhancedItem.Level = item.Level + 1;
-            currentStats.gameObject.SetActive(true);
-            afterStats.gameObject.SetActive(true);
-            currentStats.text = StatsText(item) + item.Stats.ToString();
-            afterStats.text = StatsText(item) + item.NextStats.ToString();
-            Debug.Log(1);
-        }
-        else if(ActiveFunction.name == "TransferFunction" && !transferSlot1.gameObject.activeInHierarchy)
-        {
-            if(transferSlot2.gameObject.activeInHierarchy && item.data.info == transferSlot2.data.info) //Deselect Slot 2
-            {
-                transferSlot2.gameObject.SetActive(false);
-                slot2Stats.gameObject.SetActive(false);
-            }
-            else
-            {
-                transferSlot1.gameObject.SetActive(true);
-                transferSlot1.data.info = item.data.info;
-                transferSlot1.Level = item.Level;
-                slot1Stats.gameObject.SetActive(true);
-                slot1Stats.text = StatsText(item) + item.Stats.ToString();
-            }
 
-        }
-        else if(ActiveFunction.name == "TransferFunction" )
-        {
-            if (item.data.info != transferSlot1.data.info && !transferSlot2.gameObject.activeInHierarchy) 
-            {
-                transferSlot2.gameObject.SetActive(true);
-                transferSlot2.data.info = item.data.info;
-                transferSlot2.Level = item.Level;
-                slot2Stats.gameObject.SetActive(true);
-                slot2Stats.text = StatsText(item) + item.Stats.ToString();
-
-            }
-            else if(item.data.info == transferSlot1.data.info) //DeselectSlot1
-            {
-                transferSlot1.gameObject.SetActive(false);
-                slot1Stats.gameObject.SetActive(false);
-            }
-            else if(transferSlot2.gameObject.activeInHierarchy)
-            {
-                if(item.data.info == transferSlot2.data.info) //DeselectSlot2
-                {
-                    transferSlot2.gameObject.SetActive(false);
-                    slot2Stats.gameObject.SetActive(false);
-                }
-                else //swap slot 2
-                {
-                    transferSlot2.data.info = item.data.info;
-                    transferSlot2.Level = item.Level;
-                    slot2Stats.text = StatsText(item) + item.Stats.ToString();
-                }
-            }
-            slot1Stats.text = StatsText(transferSlot1) + transferSlot1.Stats.ToString(); //reupdate Slot1 stats
-        }
-    }    
-
-    public void DeselectItem()
-    {
-        ReleaseItemInView();
+        // Question: Why we need upgradeItem.data become null when starting?
+        // Answer: If you upgrade the first sword, then you swap another sword
+        //         Then you go to upgrade system, but not click to any item, click to "upgrade button" => it keeps upgrading the old item
+        //         Because the upgradeItem didn't reset.
+        // You can see in the UpgradeItem(), the second condition is if (upgradeItem.data == null) return;
+        upgradeItem.data = null;
     }
 
-    public void ReleaseItemInView()
+    public void DisplayItem(int idx)
     {
-        if (ActiveFunction.name == "UpgradeFunction")
+        currentIdx = idx;
+        if (!equipItems[idx].gameObject.activeInHierarchy )
         {
-            currentEnhancedItem.gameObject.SetActive(false);
-            afterEnhancedItem.gameObject.SetActive(false);
-            currentStats.gameObject.SetActive(false);
-            afterStats.gameObject.SetActive(false);
+            UndisplayItem();
+            return;
         }
-        else if (ActiveFunction.name == "TransferFunction")
+
+        upgradeItem.gameObject.SetActive(true);
+        previewItem.gameObject.SetActive(true);
+
+        upgradeItem.data = equipItems[idx].data;
+        upgradeItem.UpdateItemImage();
+
+        previewItem.data.info = upgradeItem.data.info;
+        previewItem.UpdateItemImage();
+
+        DisplayUpgradeCurrentStat();
+        DisplayUpgradeStatPreview();
+    }
+
+    public void UpgradeItem()
+    {
+        //+ Step 1: Go to Player Stat scripts and read two functions RemoveItemStat() and AddItemStat() 
+        //          RemoveItemStat(): Remove current stats of current equipped item
+        //          AddItemStat(): Add the stat of the equipped item
+        //          => You will understand why.
+        //+ Step 2: Firstly, I removed all the stats of the equipped item from player stat
+        //          Then, we upgrade the item => the stats of item will be increased
+        //          Finally, we add the new stat to player stat.
+        //
+        // Question: Why don't you update the stats of equipped item?
+        // Answer: It will be more complex because we need to add one more function. Just ultilize all functions we have.
+
+        if (!equipItems[currentIdx].gameObject.activeInHierarchy || upgradeItem.data == null)
         {
-            transferSlot1.gameObject.SetActive(false);
-            transferSlot2.gameObject.SetActive(false);
-            slot1Stats.gameObject.SetActive(false);
-            slot2Stats.gameObject.SetActive(false);
+            return;
+        }
+
+        PlayerStat.Instance.RemoveItemStat(upgradeItem);
+
+        upgradeItem.data.currentLevel++;
+        foreach(ItemInfo.ItemStat.Stat stat in upgradeItem.data.currentStat)
+        {
+            stat.value = stat.GetNextValue();
+        }
+
+        PlayerStat.Instance.AddItemStat(upgradeItem);
+        DisplayUpgradeCurrentStat();
+        DisplayUpgradeStatPreview();
+    }
+    private void DisplayUpgradeCurrentStat()
+    {
+        upgradeItem.UpdateItemImage();
+        int len = upgradeItem.data.currentStat.Length;
+        for(int i = 0; i < len; i++)
+        {
+            currentStatTexts[i].gameObject.SetActive(true);
+            currentStatTexts[i].text = upgradeItem.data.currentStat[i].type.ToString() + ": " 
+                + upgradeItem.data.currentStat[i].value.ToString();
+        }
+        for(int i = len; i < 3; i++)
+        {
+            currentStatTexts[i].gameObject.SetActive(false);
+        }
+    }
+    private void DisplayUpgradeStatPreview()
+    {
+        previewItem.data.currentLevel = upgradeItem.data.currentLevel + 1;
+        previewItem.UpdateItemImage(); //Update the level text
+
+        int len = upgradeItem.data.currentStat.Length;
+        for (int i = 0; i < len; i++)
+        {
+            previewStatTexts[i].gameObject.SetActive(true);
+            previewStatTexts[i].text =
+                upgradeItem.data.currentStat[i].type.ToString() + ": " 
+                + upgradeItem.data.currentStat[i].GetNextValue().ToString();
+        }
+        for (int i = len; i < 3; i++)
+        {
+            previewStatTexts[i].gameObject.SetActive(false);
         }
     }
 
-    string StatsText(InventoryItem item)
+    private void UndisplayItem()
     {
-        if (item.data.info.stat.type.ToString() == "Weapon" ||
-            item.data.info.stat.type.ToString() == "Ring" ||
-            item.data.info.stat.type.ToString() == "Necklace")
+        upgradeItem.gameObject.SetActive(false);
+        previewItem.gameObject.SetActive(false);
+        foreach (TextMeshProUGUI text in currentStatTexts)
         {
-            return "Attack: ";
+            text.gameObject.SetActive(false);
         }
-        if (item.data.info.stat.type.ToString() == "Helmet" ||
-            item.data.info.stat.type.ToString() == "Armor" ||
-            item.data.info.stat.type.ToString() == "Shoes")
+        foreach (TextMeshProUGUI text in previewStatTexts)
         {
-            return "Defense: ";
-        }
-        return "";
-    }
-
-    public void Upgrade()
-    {
-        currentEnhancedItem.Level++;
-        afterEnhancedItem.Level++;
-        currentStats.text = StatsText(currentEnhancedItem) + currentEnhancedItem.Stats.ToString();
-        afterStats.text = StatsText(afterEnhancedItem) + currentEnhancedItem.NextStats.ToString();
-    }
-
-    public void Transfer()
-    {
-        if(transferSlot1.gameObject.activeInHierarchy && transferSlot2.gameObject.activeInHierarchy)
-        {
-            //Swap Level
-            int level;
-            level = transferSlot1.Level;
-            transferSlot1.Level = transferSlot2.Level;
-            transferSlot2.Level = level;
-            //Display after swap
-            slot1Stats.text = StatsText(transferSlot1) + transferSlot1.Stats.ToString();
-            slot2Stats.text = StatsText(transferSlot2) + transferSlot2.Stats.ToString();
+            text.gameObject.SetActive(false);
         }
     }
-                   
-    public void DisplayView()
-    {
-        ReleaseItemInView();
-        foreach (KeyValuePair<string, UIUpgradeView> view in viewsDictionary)
-        {
-            view.Value.gameObject.SetActive(false);
-        }
-
-    }
-
 }
