@@ -273,20 +273,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27b4ad61ad5556f468e3b29aeb081505, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data:
-    ID: 0
-    info: {fileID: 0}
-    amount: 0
-    stat:
-      type: 0
-      rarity: 0
-      itemLevel: 1
-      stats: []
   img: {fileID: 8101133387854017203}
   backGround: {fileID: 8101133388310093444}
   frame: {fileID: 8101133389770455271}
+  data:
+    ID: 0
+    info: {fileID: 11400000, guid: b8995dfefe5a8e54286d845563823bcc, type: 2}
+    amount: 0
+    currentLevel: 1
+    currentStat: []
   levelText: {fileID: 1961910999986229582}
-  NextStats: 0
 --- !u!1 &8101133388310093446
 GameObject:
   m_ObjectHideFlags: 0

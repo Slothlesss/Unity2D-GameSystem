@@ -17,10 +17,14 @@ MonoBehaviour:
     color: {r: 1, g: 1, b: 1, a: 1}
     countable: 1
     itemName: Wood Rare
-    specialStat: 
-    itemDescription: 
-  stat:
+    specialStat: Just a material
+    itemDescription: '- Write something here
+
+      - Write something here
+
+      ...'
+  baseStat:
     type: 10
     rarity: 2
-    itemLevel: 1
+    requiredLevel: 1
     stats: []

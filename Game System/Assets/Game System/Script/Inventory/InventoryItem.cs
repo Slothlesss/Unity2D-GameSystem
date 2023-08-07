@@ -9,10 +9,6 @@ public class InventoryItem : ItemBase
 {
     public TextMeshProUGUI levelText;
 
-    public override void Start()
-    {
-        UpdateItemImage();
-    }
 
     public override void UpdateItemImage()
     {

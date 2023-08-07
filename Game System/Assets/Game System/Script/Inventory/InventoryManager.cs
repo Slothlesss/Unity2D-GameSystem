@@ -82,20 +82,6 @@ public class InventoryManager : Singleton<InventoryManager>
         SpawnItemsFromData();
     }
 
-    private void OnEnable()
-    {
-        foreach(EquipmentSlot slot in equipmentSlots)
-        {
-            InventoryItem item = slot.GetComponentInChildren<InventoryItem>();
-            if (item != null)
-            {
-                item.UpdateItemImage(); 
-            }
-            
-        }
-    }
-
-
     private void Update()
     {
         //Just check that InventorySystem is active or not => I just want to ultilize the customCursor instead of creating new parameter "GameObject inventorySystem"
@@ -593,7 +579,6 @@ public class InventoryManager : Singleton<InventoryManager>
                 item.data.amount += amount;
                 item.data.currentStat = data.info.baseStat.stats;
 
-                item.UpdateItemImage();
                 //Add data to database
                 InventoryData.AddInventoryData(item.data);
 
@@ -700,7 +685,6 @@ public class InventoryManager : Singleton<InventoryManager>
 
                 InventoryItem item = itemAdd.GetComponent<InventoryItem>();
                 item.data = data;
-                item.UpdateItemImage();
 
 
                 if (data.info.prop.countable)
@@ -724,7 +708,6 @@ public class InventoryManager : Singleton<InventoryManager>
 
                 InventoryItem item = itemAdd.GetComponent<InventoryItem>();
                 item.data = data;
-                item.UpdateItemImage();
 
                 slot.isEquip = true;
             }

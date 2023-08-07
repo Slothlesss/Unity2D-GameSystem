@@ -140,7 +140,6 @@ public class ShopManager : MonoBehaviour
             int ranItem = Random.Range(0, shopContainers[idx].kindOfItem[randKind].itemInfos.Length);
 
             shopSlots[i].data.info = shopContainers[idx].kindOfItem[randKind].itemInfos[ranItem];
-            shopSlots[i].UpdateItemImage();
             
             int ranCurrency = Random.Range(0, 2);
             shopSlots[i].typeCurrency = ranCurrency == 0 ? Currency.Gold : Currency.Diamond;

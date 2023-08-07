@@ -70,10 +70,8 @@ public class UpgradeManager : MonoBehaviour
         previewItem.gameObject.SetActive(true);
 
         upgradeItem.data = equipItems[idx].data;
-        upgradeItem.UpdateItemImage();
 
         previewItem.data.info = upgradeItem.data.info;
-        previewItem.UpdateItemImage();
 
         DisplayUpgradeCurrentStat();
         DisplayUpgradeStatPreview();
@@ -111,7 +109,6 @@ public class UpgradeManager : MonoBehaviour
     }
     private void DisplayUpgradeCurrentStat()
     {
-        upgradeItem.UpdateItemImage();
         int len = upgradeItem.data.currentStat.Length;
         for(int i = 0; i < len; i++)
         {
@@ -127,15 +124,27 @@ public class UpgradeManager : MonoBehaviour
     private void DisplayUpgradeStatPreview()
     {
         previewItem.data.currentLevel = upgradeItem.data.currentLevel + 1;
-        previewItem.UpdateItemImage(); //Update the level text
+
+        previewItem.levelText.color = Color.green;
 
         int len = upgradeItem.data.currentStat.Length;
         for (int i = 0; i < len; i++)
         {
             previewStatTexts[i].gameObject.SetActive(true);
-            previewStatTexts[i].text =
-                upgradeItem.data.currentStat[i].type.ToString() + ": " 
-                + upgradeItem.data.currentStat[i].GetNextValue().ToString();
+
+            string coloredStatText = "<color=green>" + upgradeItem.data.currentStat[i].GetNextValue().ToString() + "</color>";
+            string normalStatText = upgradeItem.data.currentStat[i].GetNextValue().ToString();
+            string typeText = upgradeItem.data.currentStat[i].type.ToString();
+
+            if (upgradeItem.data.currentStat[i].GetNextValue() == upgradeItem.data.currentStat[i].value)
+            {
+                previewStatTexts[i].text = typeText + ": " + normalStatText;
+            }
+            else
+            {
+                previewStatTexts[i].text = typeText + ": " + coloredStatText;
+            }
+
         }
         for (int i = len; i < 3; i++)
         {

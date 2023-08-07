@@ -40,6 +40,11 @@ public class ItemBase : MonoBehaviour
         UpdateItemImage();
     }
 
+    public virtual void Update()
+    {
+        Start();
+    }
+
     public virtual void UpdateItemImage()
     {
         if (data.info == null) return;
@@ -49,15 +54,6 @@ public class ItemBase : MonoBehaviour
         CheckRarity();
 
     }
-
-    // Well, we shouldn't use Update() too much, which affects the fps
-    // Therefore, when item.data.info is changed, we call the function "UpdateItemImage()" to update the sprite, color, background, frame, level text,...
-    // Instead of calling it each frame by using Update()
-    /*public virtual void Update()
-    {
-        Start();
-    }
-    */
 
     public int SetPriceByRarity()
     {

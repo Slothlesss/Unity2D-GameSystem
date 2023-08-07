@@ -20,7 +20,6 @@ public class CraftSlot : MonoBehaviour
     {
         item.gameObject.SetActive(true);
         item.data.info = info;
-        item.UpdateItemImage();
 
         amountText.text = currentAmount.ToString() + "/" + requireAmount.ToString();
         if (currentAmount < requireAmount)

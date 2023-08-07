@@ -28,7 +28,6 @@ public class CraftRequirement : MonoBehaviour
 
         item = resultSlot.GetComponent<InventoryItem>();
         item.data.info = resultItem; //Update the image of result
-        item.UpdateItemImage();
         
 
         UpdateCraftSlot();

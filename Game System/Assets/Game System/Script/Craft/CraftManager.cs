@@ -19,7 +19,7 @@ public class CraftManager : MonoBehaviour
         });
     }
 
-    public void OnEnable()
+    public void Start()
     {
         craftMenus = craftMenuPool.GetComponentsInChildren<CraftRequirement>();
         DisplayMenu(0);

@@ -23,8 +23,8 @@ MonoBehaviour:
       - Write something here
 
       ...'
-  stat:
+  baseStat:
     type: 7
     rarity: 5
-    itemLevel: 1
+    requiredLevel: 1
     stats: []

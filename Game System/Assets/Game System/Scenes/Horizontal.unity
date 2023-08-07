@@ -7462,6 +7462,7 @@ RectTransform:
   - {fileID: 179839820}
   - {fileID: 1333802846}
   - {fileID: 1225831722}
+  - {fileID: 1712487941}
   m_Father: {fileID: 993830492}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -21489,8 +21490,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -27268,7 +27269,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: fc83fec2909e41f4c9f6a793f356255f, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -27277,7 +27278,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
 --- !u!222 &1225831725
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -28882,22 +28883,97 @@ MonoBehaviour:
   gacha:
   - rarity: Legendary
     rate: 1
-    rewards: []
+    rewards:
+    - ID: 0
+      info: {fileID: 11400000, guid: 96e3421c0ace2a14899602e9f0da470f, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
+    - ID: 0
+      info: {fileID: 11400000, guid: 8e11ad7b15e107748aa02d89ca7cf2a6, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
   - rarity: Mythical
     rate: 2
-    rewards: []
+    rewards:
+    - ID: 0
+      info: {fileID: 11400000, guid: 1e8b21fb4ff0b414b9a86dc5e20c71de, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
+    - ID: 0
+      info: {fileID: 11400000, guid: b8995dfefe5a8e54286d845563823bcc, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
+    - ID: 0
+      info: {fileID: 11400000, guid: 1cf9acad09a77dc428e07ca9f017f7e0, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
   - rarity: Epic
     rate: 5
-    rewards: []
+    rewards:
+    - ID: 0
+      info: {fileID: 11400000, guid: df8534995d868a1428a8244646146086, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
+    - ID: 0
+      info: {fileID: 11400000, guid: 34422b0f5476f034b91492dca83b4693, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
   - rarity: Rare
     rate: 15
-    rewards: []
+    rewards:
+    - ID: 0
+      info: {fileID: 11400000, guid: 6521f1e0dbc8a9f469a8da9c3f404c36, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
+    - ID: 0
+      info: {fileID: 11400000, guid: f43c0352ce2e5774fb19f161e7f00d9a, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
+    - ID: 0
+      info: {fileID: 11400000, guid: b63598ca5afb7d949b8f88cc65fd52ec, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
   - rarity: Uncommon
     rate: 25
-    rewards: []
+    rewards:
+    - ID: 0
+      info: {fileID: 11400000, guid: f65ab84180c2fa34ebb6e20c397f88f8, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
+    - ID: 0
+      info: {fileID: 11400000, guid: a10694fb29e54944395bfdcb60c98441, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
   - rarity: Common
     rate: 52
-    rewards: []
+    rewards:
+    - ID: 0
+      info: {fileID: 11400000, guid: 3b9df0dee788be8439eb75fff732939a, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
+    - ID: 0
+      info: {fileID: 11400000, guid: 39976750741dbfc4da32e5e16cd92b29, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
+    - ID: 0
+      info: {fileID: 11400000, guid: 1db48aa6865ed8745afde3c2e4a0f70b, type: 2}
+      amount: 0
+      currentLevel: 0
+      currentStat: []
   cardParent: {fileID: 1609682274}
   UIRate:
   - {fileID: 1293490368}
@@ -36224,6 +36300,82 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1703813265}
+  m_CullTransparentMesh: 1
+--- !u!1 &1712487940
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1712487941}
+  - component: {fileID: 1712487943}
+  - component: {fileID: 1712487942}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1712487941
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1712487940}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 354648101}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -4, y: 38}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1712487942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1712487940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 856d9f6026d87c34aaef3d0b3351a3d6, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 5
+--- !u!222 &1712487943
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1712487940}
   m_CullTransparentMesh: 1
 --- !u!1 &1715058323
 GameObject:
