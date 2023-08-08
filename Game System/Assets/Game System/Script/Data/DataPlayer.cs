@@ -12,6 +12,17 @@ public class DataPlayer : ScriptableObject
     public ItemInfo.ItemStat.Stat[] baseStats;
     public ItemInfo.ItemStat.Stat[] additionalStats;
 
+    public void ResetAllData()
+    {
+        level = 1;
+        gold = 1000000;
+        diamond = 100000;
+        for (int i = 0; i < additionalStats.Length; i++)
+        {
+            additionalStats[i].value = 0;
+        }
+        File.Delete(Application.persistentDataPath + "/playerData.json");
+    }
     public static void SaveData(DataPlayer data)
     {
         PlayerDataSaveData saveData = new PlayerDataSaveData();
@@ -68,23 +79,25 @@ public class PlayerDataEditor : Editor
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
-        DataPlayer playerData = (DataPlayer)target;
 
+        DataPlayer playerData = (DataPlayer)target;
         GUIStyle style = new GUIStyle(GUI.skin.button);
         style.fontSize = 14;
 
-        if (GUILayout.Button("Clear all baseStats value", style, GUILayout.Height(30)))
+
+
+        if (GUILayout.Button("Set Base Stats To Zero", style, GUILayout.Height(30)))
         {
-            ClearAdditionalStats(playerData.baseStats);
+            SetAdditionalStatsToZero(playerData.baseStats);
         }
 
-        if (GUILayout.Button("Clear all additionalStats value", style, GUILayout.Height(30)))
+        if (GUILayout.Button("Set Additional Stats To Zero", style, GUILayout.Height(30)))
         {
-            ClearAdditionalStats(playerData.additionalStats);
+            SetAdditionalStatsToZero(playerData.additionalStats);
         }
     }
 
-    private void ClearAdditionalStats(ItemInfo.ItemStat.Stat[] stats)
+    private void SetAdditionalStatsToZero(ItemInfo.ItemStat.Stat[] stats)
     {
         for (int i = 0; i < stats.Length; i++)
         {

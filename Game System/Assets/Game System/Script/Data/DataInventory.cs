@@ -7,6 +7,13 @@ public class DataInventory : ScriptableObject
 {
     public List<ItemBase.ItemData> inventoryData;
     public List<ItemBase.ItemData> equipmentData;
+
+    public void ResetAllData()
+    {
+        inventoryData.Clear();
+        equipmentData.Clear();
+        File.Delete(Application.persistentDataPath + "/savedata.json");
+    }
     public int GetAmount(ItemInfo info) //Fix in the future, I want to get amout
     {
         foreach (ItemBase.ItemData data in inventoryData)
