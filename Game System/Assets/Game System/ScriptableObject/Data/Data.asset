@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d9ff03209930d04c9f9fa639c54ea59, type: 3}
   m_Name: Data
   m_EditorClassIdentifier: 
-  dataPlayer: {fileID: 0}
-  dataInventory: {fileID: 0}
+  dataPlayer: {fileID: 11400000, guid: 83fa91dc3f985264a8eab8b58427ec9d, type: 2}
+  dataInventory: {fileID: 11400000, guid: 7aa33c38de1ceb64e843d5bb25efc770, type: 2}
