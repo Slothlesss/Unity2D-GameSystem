@@ -5,15 +5,15 @@ using UnityEngine;
 public class EquipmentSlot : MonoBehaviour
 {
     public ItemManager.ItemType type;
-    public GameObject GreenFrame;
+    public GameObject EquipableFrame;
     public bool isEquip;
     public void ShowCannotEquip()
     {
-        GreenFrame.SetActive(false);
+        EquipableFrame.SetActive(false);
     }
 
     public void ShowCanEquip()
     {
-        GreenFrame.SetActive(true);
+        EquipableFrame.SetActive(true);
     }
 }

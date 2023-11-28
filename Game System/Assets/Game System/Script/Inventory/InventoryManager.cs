@@ -288,6 +288,8 @@ public class InventoryManager : Singleton<InventoryManager>
             isCarryingItem = true;
         }
     }
+    /* Display the equipable and unequiable views. 
+     */
     private void DisplayYellowField(ref EquipmentSlot equipmentSlot, EquipmentSlot equipableSlot)
     {
         //If item is taken from equipment slot => Display inventoryField if in range
@@ -317,7 +319,10 @@ public class InventoryManager : Singleton<InventoryManager>
             }
         }
     }
-    private void OnDragItem() //Means when holding item
+
+    /* When holding item
+     */
+    private void OnDragItem() 
     {
         //Step 1: Check Slot that has similar types with carrying item => Ex: Sword fits Weapon slot
         EquipmentSlot equipmentSlot = null;
@@ -441,7 +446,7 @@ public class InventoryManager : Singleton<InventoryManager>
 
          */
 
-        viewportMinCorner = v_wcorners[0]; //Bot Left
+    viewportMinCorner = v_wcorners[0]; //Bot Left
         viewportMaxCorner = v_wcorners[2]; //Top Right
 
         // Each Rect will have 4 corners => use positions of these corners to address the problem

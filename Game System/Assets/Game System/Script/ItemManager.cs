@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemManager : MonoBehaviour
+public class ItemManager : Singleton<ItemManager>
 {
     [System.Serializable]
     
@@ -49,12 +49,6 @@ public class ItemManager : MonoBehaviour
     }
 
     public rarityBackGround[] rarityBG;
-
-    public static ItemManager Instance;
-    private void Awake()
-    {
-        Instance = this;
-    }
 
     public Rarity GetRandomShopDailyRarity()
     {

@@ -21,8 +21,5 @@ public class GameManager : Singleton<GameManager>
             systemViews[i].gameObject.SetActive(false);
         }
         systemViews[idx].gameObject.SetActive(true);
-
     }
-
-
 }

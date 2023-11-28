@@ -12,9 +12,9 @@ public class ItemBase : MonoBehaviour
     [SerializeField] public Image backGround;
     [SerializeField] public Image frame;
 
-    //Question: Why we need to create a ItemData class? Why don't we put everything like ID, info, amount, currentStat outside?
-    //Answer: Because when we want to use operation = (to copy these values), we just need to use data = data instead of id = id, info = info, ...
-
+    /* Question 1: Why we need to create a ItemData class? Why don't we put everything like ID, info, amount, currentStat outside?
+     * Answer 1: Because when we want to use operation = (to copy these values), we just need to use data = data instead of id = id, info = info, ...
+     */
     [System.Serializable]
     public class ItemData 
     {
@@ -22,17 +22,17 @@ public class ItemBase : MonoBehaviour
         public ItemInfo info; //Item Info will have base stats of item => when create Item GameObject, the gameObject will have base baseStat and can fix it.
         public int amount = 0;
         public int currentLevel = 0;
-        public ItemInfo.ItemStat.Stat[] currentStat;
+        public ItemInfo.ItemStat.Stat[] currentStat; // <- Question 2
 
 
     }
     public ItemData data;
 
-    //Question: Why we need to use ItemInfo.ItemStat currentStat but not use info.stat ?
-    //Answer: Because Scriptable Object is read-only, we can't add value to info.stat.
-    //        Therefore, we copy all the stats from info to current stats.
-    //        After that, if we want to upgrade, the value will be added to current stat, not to info.stat.
-
+    /* Question 2: Why we need to use ItemInfo.ItemStat.Stat[] currentStat but not use info.stat ?
+     * Answer 2: Because Scriptable Object is read-only, we can't add value to info.stat.
+     *         Therefore, we copy all the stats from info to current stats.
+     *         After that, if we want to upgrade, the value will be added to current stat, not to info.stat.
+     */
     
     
     public virtual void Start()

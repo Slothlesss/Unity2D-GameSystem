@@ -54,12 +54,7 @@ public class ShopManager : MonoBehaviour
     }
     public shopContainer[] shopContainers;
 
-
     public List<int> times;
-
-
-
-
 
     public void Awake()
     {

@@ -76,19 +76,21 @@ public class UpgradeManager : MonoBehaviour
         DisplayUpgradeCurrentStat();
         DisplayUpgradeStatPreview();
     }
-
+    /* 
+     * Step 1: Go to Player Stat scripts and read two functions RemoveItemStat() and AddItemStat() 
+     *          RemoveItemStat(): Remove current stats of current equipped item
+     *          AddItemStat(): Add the stat of the equipped item
+     *          => You will understand why.
+     * Step 2: Firstly, I removed all the stats of the equipped item from player stat
+     *          Then, we upgrade the item => the stats of item will be increased
+     *          Finally, we add the new stat to player stat.
+     *
+     * Question: Why don't you update the stats of equipped item?
+     * Answer: It will be more complex because we need to add one more function. Just ultilize all functions we have.
+     */
     public void UpgradeItem()
     {
-        //+ Step 1: Go to Player Stat scripts and read two functions RemoveItemStat() and AddItemStat() 
-        //          RemoveItemStat(): Remove current stats of current equipped item
-        //          AddItemStat(): Add the stat of the equipped item
-        //          => You will understand why.
-        //+ Step 2: Firstly, I removed all the stats of the equipped item from player stat
-        //          Then, we upgrade the item => the stats of item will be increased
-        //          Finally, we add the new stat to player stat.
-        //
-        // Question: Why don't you update the stats of equipped item?
-        // Answer: It will be more complex because we need to add one more function. Just ultilize all functions we have.
+        
 
         if (!equipItems[currentIdx].gameObject.activeInHierarchy || upgradeItem.data == null)
         {

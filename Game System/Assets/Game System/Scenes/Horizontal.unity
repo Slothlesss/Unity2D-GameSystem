@@ -1236,7 +1236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  GreenFrame: {fileID: 1108825554}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!114 &31574647
 MonoBehaviour:
@@ -5185,7 +5185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  GreenFrame: {fileID: 1148714228}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!222 &220872950
 CanvasRenderer:
@@ -9078,7 +9078,7 @@ GameObject:
   - component: {fileID: 444269048}
   - component: {fileID: 444269047}
   m_Layer: 5
-  m_Name: GreenFrame
+  m_Name: EquipableFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10020,7 +10020,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
-  GreenFrame: {fileID: 1437862233}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!114 &526277675
 MonoBehaviour:
@@ -13569,7 +13569,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
-  GreenFrame: {fileID: 331347146}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!222 &625052999
 CanvasRenderer:
@@ -16457,7 +16457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
-  GreenFrame: {fileID: 444269045}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!114 &774651207
 MonoBehaviour:
@@ -16730,7 +16730,7 @@ GameObject:
   - component: {fileID: 787361762}
   - component: {fileID: 787361761}
   m_Layer: 5
-  m_Name: GreenFrame
+  m_Name: EquipableFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17727,7 +17727,7 @@ GameObject:
   - component: {fileID: 836742788}
   - component: {fileID: 836742787}
   m_Layer: 5
-  m_Name: GreenFrame
+  m_Name: EquipableFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18067,7 +18067,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 6
-  GreenFrame: {fileID: 1899790811}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!114 &846876249
 MonoBehaviour:
@@ -22514,7 +22514,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  GreenFrame: {fileID: 787361759}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!114 &1034716465
 MonoBehaviour:
@@ -23529,7 +23529,7 @@ GameObject:
   - component: {fileID: 1108825557}
   - component: {fileID: 1108825556}
   m_Layer: 5
-  m_Name: GreenFrame
+  m_Name: EquipableFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31405,7 +31405,7 @@ GameObject:
   - component: {fileID: 1437862236}
   - component: {fileID: 1437862235}
   m_Layer: 5
-  m_Name: GreenFrame
+  m_Name: EquipableFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33654,7 +33654,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 6
-  GreenFrame: {fileID: 1808188186}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!222 &1569836773
 CanvasRenderer:
@@ -34617,7 +34617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
-  GreenFrame: {fileID: 836742785}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!114 &1605366674
 MonoBehaviour:
@@ -36571,7 +36571,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
-  GreenFrame: {fileID: 818498501}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!222 &1726128198
 CanvasRenderer:
@@ -39889,7 +39889,7 @@ GameObject:
   - component: {fileID: 1899790814}
   - component: {fileID: 1899790813}
   m_Layer: 5
-  m_Name: GreenFrame
+  m_Name: EquipableFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42373,7 +42373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  GreenFrame: {fileID: 776908583}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!222 &2021229277
 CanvasRenderer:
@@ -43807,7 +43807,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
-  GreenFrame: {fileID: 470607914}
+  EquipableFrame: {fileID: 0}
   isEquip: 0
 --- !u!222 &2058886290
 CanvasRenderer:
