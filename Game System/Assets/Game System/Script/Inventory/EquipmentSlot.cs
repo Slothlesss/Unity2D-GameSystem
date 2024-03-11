@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EquipmentSlot : MonoBehaviour
 {
-    public ItemManager.ItemType type;
+    public ItemType type;
     public GameObject EquipableFrame;
     public bool isEquip;
     public void ShowCannotEquip()

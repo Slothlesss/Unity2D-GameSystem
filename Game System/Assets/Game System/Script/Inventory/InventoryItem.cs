@@ -19,7 +19,7 @@ public class InventoryItem : ItemBase
             InventorySlot slot = GetComponentInParent<InventorySlot>();
             if (slot)
             {
-                slot.CountText(true);
+                slot.DisplayCountText(true);
             }
 
             levelText.gameObject.SetActive(false);

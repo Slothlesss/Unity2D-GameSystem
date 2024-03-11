@@ -31,20 +31,19 @@ public class InventoryManager : Singleton<InventoryManager>
 
 
     [Header("Slots")]
-    public List<GameObject> emptySlots = new List<GameObject>();
+    public List<GameObject> unlockedSlots = new List<GameObject>();
     public List<GameObject> lockSlots = new List<GameObject>();
     public List<EquipmentSlot> equipmentSlots = new List<EquipmentSlot>();
 
 
     bool isCarryingItem = false;
-    Toggle ActiveSlot;
+    private Toggle ActiveSlot;
 
 
     [Header("Item View")]
     public GameObject itemViewPanel;
     public TextMeshProUGUI itemNameUI;
     public Image itemBackgroundUI;
-    public Image itemFrameUI;
     public Image itemImageUI;
     public TextMeshProUGUI itemLevel;
     public TextMeshProUGUI itemRarity;
@@ -54,6 +53,8 @@ public class InventoryManager : Singleton<InventoryManager>
     public GameObject verticalSlash;
     public GameObject itemViewStatGroup;
     public UIStat[] itemStats;
+
+
     public GameObject inventoryField;
     public GameObject equipField;
 
@@ -61,9 +62,13 @@ public class InventoryManager : Singleton<InventoryManager>
 
     public Sprite[] statSprites;
 
-    public int startIdx = 0;
 
-    
+    [Header("InventoryTab")]
+    public ToggleGroup inventoryTabPool;
+    public Toggle[] inventoryTabs;
+    private Toggle currentTab;
+
+    private int[] tabParameters;
 
     private void Awake()
     {
@@ -80,6 +85,25 @@ public class InventoryManager : Singleton<InventoryManager>
         }
         SpawnSlots();
         SpawnItemsFromData();
+
+        //Allocate DisplayTab() function to Toggle and Display first tab
+        inventoryTabs = inventoryTabPool.GetComponentsInChildren<Toggle>();
+        tabParameters = new int[] { 0, 7, 8, 9, 11};
+        for(int i = 0; i < inventoryTabs.Length; i++)
+        {
+            Toggle tab = inventoryTabs[i];
+            int tabPara = tabParameters[i];
+            tab.group = inventoryTabPool;
+            tab.onValueChanged.AddListener( delegate (bool isOn)
+            {
+                if (isOn)
+                {
+                    InitializeInventoryItemFromData(tabPara);
+                }
+            });
+            
+        }
+        InitializeInventoryItemFromData(0);
     }
 
     private void Update()
@@ -89,21 +113,20 @@ public class InventoryManager : Singleton<InventoryManager>
 
         //Overall:
         //- If there is any slot is clicked => Display the item baseStat
-        //- If users use right click to the active slot => They will take the item
+        //- If users press left button to the active slot => They will take the item
         if (Grid.GetComponent<ToggleGroup>().AnyTogglesOn() == true)
         {
             ActiveSlot = Grid.GetComponent<ToggleGroup>().ActiveToggles().Single(i => i.isOn);
-            DisplayItemStat();
-
+            DisplayItemInformation();
             //If (User right click to the item AND the distance between that click and the active slot is less than 50f) 
             if (Input.GetMouseButtonDown(0) && Vector3.Distance(customCursor.position, ActiveSlot.transform.position) < 50f)
             {
                 TakeItem();
             }
             if (isCarryingItem)
-            {
+            {   
                 scrollRect.vertical = false; //Otherwise, your viewport will move together with item.
-                OnDragItem();
+                DragItem();
             }
             else
             {
@@ -113,10 +136,43 @@ public class InventoryManager : Singleton<InventoryManager>
             }
         }
         //----Display Item Information
-        DisplayItemInformation();
-
+        DisplayItemViewPanel();
     }
-    private void DisplayItemInformation()
+    private void SpawnSlots()
+    {
+        for (int i = 0; i < inventorySize; i++)
+        {
+            GameObject addSlot = Instantiate(SlotFree, Grid.transform);
+            unlockedSlots.Add(addSlot);
+            addSlot.GetComponent<Toggle>().group = GetComponentInParent<ToggleGroup>();
+            if (i == 0)
+            {
+                addSlot.GetComponent<Toggle>().isOn = true;
+            }
+        }
+        for (int i = 0; i < inventoryLockedSize; i++)
+        {
+            GameObject addSlot = Instantiate(SlotLocked, Grid.transform);
+            lockSlots.Add(addSlot);
+            addSlot.GetComponent<Toggle>().group = GetComponentInParent<ToggleGroup>();
+        }
+    }
+
+    /// <summary>
+    /// Spawn equipped and inventory items from data when the game started.
+    /// </summary>
+    private void SpawnItemsFromData()
+    {
+        InitializeInventoryItemFromData(0);
+        InitializeEquippedItemFromData();
+    }
+
+
+
+    /// <summary>
+    /// Display item information in the display field.
+    /// </summary>
+    private void DisplayItemViewPanel()
     {
         if (ActiveSlot.GetComponentInChildren<InventoryItem>() == null) //Item Information disappear
         {
@@ -127,48 +183,11 @@ public class InventoryManager : Singleton<InventoryManager>
             itemViewPanel.SetActive(true);
         }
     }
-    private void SpawnSlots()
-    {
-        for (int i = 0; i < inventorySize; i++)
-        {
-            GameObject addSlot = Instantiate(SlotFree, Grid.transform);
-            addSlot.GetComponent<InventorySlot>().index = startIdx;
-            startIdx++;
-            emptySlots.Add(addSlot);
-            
-            addSlot.GetComponent<Toggle>().group = GetComponentInParent<ToggleGroup>();
-            if (i == 0)
-            {
-                addSlot.GetComponent<Toggle>().isOn = true;
-            }
-        }
-        for (int i = 0; i < inventoryLockedSize; i++)
-        {
-            GameObject addSlot = Instantiate(SlotLocked, Grid.transform);
-            addSlot.GetComponent<InventorySlot>().index = startIdx;
-            startIdx++;
-            lockSlots.Add(addSlot);
-            addSlot.GetComponent<Toggle>().group = GetComponentInParent<ToggleGroup>();
-        }
-    }
-    private void SpawnItemsFromData()
-    {
-        if(InventoryData.inventoryData.Count != 0)
-        {
-            foreach(ItemBase.ItemData data in InventoryData.inventoryData)
-            {
-                InitializeInventoryItemFromData(data);
-            }
-        }
-        if(InventoryData.equipmentData.Count != 0)
-        {
-            foreach (ItemBase.ItemData data in InventoryData.equipmentData)
-            {
-                InitializeEquippedItemFromData(data);
-            }
-        }
-    }
-    private void DisplayItemStat()
+
+    /// <summary>
+    /// Display item information in the item view panel.
+    /// </summary>
+    private void DisplayItemInformation()
     {
         InventoryItem currentItem = ActiveSlot.GetComponentInChildren<InventoryItem>();
         if (currentItem == null) return;
@@ -184,15 +203,15 @@ public class InventoryManager : Singleton<InventoryManager>
         }
         //----2. Check type of item => if (item == Potion, Book, Scroll, Material => only show Image, no level, no rarity)
         // or you can set your own type
-        if (currentItem.data.info.baseStat.type == ItemManager.ItemType.Potion
-            || currentItem.data.info.baseStat.type == ItemManager.ItemType.Book
-            || currentItem.data.info.baseStat.type == ItemManager.ItemType.Scroll
-            || currentItem.data.info.baseStat.type == ItemManager.ItemType.Material)
+        if (currentItem.data.info.baseStat.type == ItemType.Potion
+            || currentItem.data.info.baseStat.type == ItemType.Book
+            || currentItem.data.info.baseStat.type == ItemType.Scroll
+            || currentItem.data.info.baseStat.type == ItemType.Material)
         {
             verticalSlash.SetActive(false);
             itemViewStatGroup.SetActive(false);
         }
-        else if (currentItem.data.info.baseStat.type != ItemManager.ItemType.Currency) //----3. If Item is Weapon -> Ring
+        else if (currentItem.data.info.baseStat.type != ItemType.Currency) //----3. If Item is Weapon -> Ring
         {
             verticalSlash.SetActive(true);
             itemViewStatGroup.SetActive(true);
@@ -212,7 +231,6 @@ public class InventoryManager : Singleton<InventoryManager>
         //---Then, set main features
         itemNameUI.text = currentItem.data.info.prop.itemName;
         itemBackgroundUI.sprite = currentItem.backGround.sprite;
-        itemFrameUI.sprite = currentItem.frame.sprite;
         itemImageUI.sprite = currentItem.img.sprite;
         if (itemViewStatGroup.activeInHierarchy)
         {
@@ -224,32 +242,30 @@ public class InventoryManager : Singleton<InventoryManager>
             itemSpecialStat.text = currentItem.data.info.prop.specialStat;
         }
         itemDescription.text = currentItem.data.info.prop.itemDescription;
-
-
     }
     Sprite CheckStatImage(ItemInfo.ItemStat.Stat stat)
     {
-        if(stat.type == ItemManager.StatType.Attack)
+        if(stat.type == StatType.Attack)
         {
             return statSprites[0];
         }
-        else if (stat.type == ItemManager.StatType.AttackSpeed)
+        else if (stat.type == StatType.AttackSpeed)
         {
             return statSprites[1];
         }
-        else if (stat.type == ItemManager.StatType.AttackRange)
+        else if (stat.type == StatType.AttackRange)
         {
             return statSprites[2];
         }
-        else if(stat.type == ItemManager.StatType.Health)
+        else if(stat.type == StatType.Health)
         {
             return statSprites[3];
         }
-        else if(stat.type == ItemManager.StatType.PhysicalDefense)
+        else if(stat.type == StatType.PhysicalDefense)
         {
             return statSprites[4];
         }
-        else if (stat.type == ItemManager.StatType.MagicalDefense)
+        else if (stat.type == StatType.MagicalDefense)
         {
             return statSprites[5];
         }
@@ -257,21 +273,19 @@ public class InventoryManager : Singleton<InventoryManager>
     }
     string CheckRarity(InventoryItem item)
     {
-        switch (item.data.info.baseStat.rarity.ToString())
+        switch (item.data.info.baseStat.rarity)
         {
-            case "God":
-                return "<color=#FF69B4>God</color>";
-            case "Legendary":
+            case Rarity.Legendary:
                 return "<color=red>Legendary</color>";
-            case "Mythical":
+            case Rarity.Mythical:
                 return "<color=yellow>Mythical</color>";
-            case "Epic":
+            case Rarity.Epic:
                 return "<color=purple>Epic</color>";
-            case "Rare":
+            case Rarity.Rare:
                 return "<color=blue>Rare</color>";
-            case "Uncommon":
+            case Rarity.Uncommon:
                 return "<color=green>Uncommon</color>";
-            case "Common":
+            case Rarity.Common:
                 return "<color=white>Common</color>";
         }
         return "";
@@ -288,9 +302,11 @@ public class InventoryManager : Singleton<InventoryManager>
             isCarryingItem = true;
         }
     }
-    /* Display the equipable and unequiable views. 
-     */
-    private void DisplayYellowField(ref EquipmentSlot equipmentSlot, EquipmentSlot equipableSlot)
+
+    /// <summary>
+    /// Display the yellow field when equipping or unequipping items.
+    /// </summary>
+    private void DisplayYellowField(ref EquipmentSlot equipableSlot)
     {
         //If item is taken from equipment slot => Display inventoryField if in range
         if (ActiveSlot.GetComponentInChildren<EquipmentSlot>() != null)
@@ -298,17 +314,18 @@ public class InventoryManager : Singleton<InventoryManager>
             if (is_rectTransformsOverlap(customCursor.GetComponent<RectTransform>(), inventoryRect.GetComponent<RectTransform>()))
             {
                 inventoryField.SetActive(true);
+                equipableSlot = equipmentSlots.Single(i => i.type == customCursor.GetComponentInChildren<InventoryItem>().data.info.baseStat.type);
             }
             else
             {
                 inventoryField.SetActive(false);
+                equipableSlot = null;
             }
         }
         else //If item is taken from inventory slot => Display equipField if in range
         {
             if (is_rectTransformsOverlap(customCursor.GetComponent<RectTransform>(), equipSlotRect.GetComponent<RectTransform>()))
             {
-                equipmentSlot = equipableSlot;
                 equipField.SetActive(true);
                 equipableSlot.ShowCanEquip();
             }
@@ -316,114 +333,118 @@ public class InventoryManager : Singleton<InventoryManager>
             {
                 equipField.SetActive(false);
                 equipableSlot.ShowCannotEquip();
+                equipableSlot = null;
             }
         }
     }
 
-    /* When holding item
-     */
-    private void OnDragItem() 
+    /// <summary>
+    /// When you are pressing the left mouse button.
+    /// </summary>
+    private void DragItem()
     {
         //Step 1: Check Slot that has similar types with carrying item => Ex: Sword fits Weapon slot
-        EquipmentSlot equipmentSlot = null;
-        //Check the equip slot that have the same type with item
         EquipmentSlot equipableSlot = equipmentSlots.Single(i => i.type == customCursor.GetComponentInChildren<InventoryItem>().data.info.baseStat.type);
-        DisplayYellowField(ref equipmentSlot, equipableSlot);
 
+        DisplayYellowField(ref equipableSlot);
         //Step 2: Put Item into Slot
-        InventoryItem getItem = customCursor.GetComponentInChildren<InventoryItem>();
         if (Input.GetMouseButtonUp(0))
         {
-            //Case 1: Item taken from Inventory Slot
-            if (ActiveSlot.GetComponentInChildren<InventorySlot>() != null)
+            DropItem(ref equipableSlot);
+        }
+
+    }
+    /// <summary>
+    /// When you unpress the left mouse button.
+    /// </summary>
+    private void DropItem(ref EquipmentSlot equipableSlot)
+    {
+        //Case 1: Item taken from Inventory Slot
+        InventoryItem getItem = customCursor.GetComponentInChildren<InventoryItem>();
+        if (ActiveSlot.GetComponentInChildren<InventorySlot>() != null)
+        {
+            if (equipableSlot == null) // Put item back to inventory (Nothing happen)
             {
-                if (!equipmentSlot) // Put item back to inventory (Nothing happen)
+                getItem.transform.SetParent(ActiveSlot.transform);
+                getItem.transform.localPosition = Vector3.zero;
+                isCarryingItem = false;
+            }
+            else if (!equipableSlot.isEquip) //EquipItem
+            {
+                getItem.transform.SetParent(equipableSlot.transform);
+                getItem.transform.localPosition = Vector3.zero;
+                equipableSlot.isEquip = true;
+                ActiveSlot.GetComponent<InventorySlot>().isEmpty = true;
+
+                equipableSlot.ShowCannotEquip(); // Undisplay the red frame
+
+                InventoryData.RemoveInventoryData(getItem.data.ID);
+                InventoryData.AddEquipmentData(getItem.data);
+
+                playerStat.AddItemStat(getItem);
+
+                isCarryingItem = false;
+            }
+            else //Swap Item
+            {
+                InventoryItem itemEquip = equipableSlot.GetComponentInChildren<InventoryItem>();
+                itemEquip.transform.SetParent(ActiveSlot.transform);
+                itemEquip.transform.localPosition = Vector3.zero;
+                getItem.transform.SetParent(equipableSlot.transform);
+                getItem.transform.localPosition = Vector3.zero;
+                equipableSlot.ShowCannotEquip();
+
+                //Update the database
+                InventoryData.RemoveEquipmentData(itemEquip.data.ID);
+                InventoryData.AddInventoryData(itemEquip.data);
+
+                InventoryData.RemoveInventoryData(getItem.data.ID);
+                InventoryData.AddEquipmentData(getItem.data);
+
+                playerStat.RemoveItemStat(itemEquip);
+                playerStat.AddItemStat(getItem);
+
+                isCarryingItem = false;
+            }
+        }
+        //Case 2: Item taken from Equipment Slot 
+        else
+        {
+            if (is_rectTransformsOverlap(customCursor.GetComponent<RectTransform>(), inventoryRect.GetComponent<RectTransform>()))
+            {
+                //-----Step 1: Put item into nearest Slot that is Empty
+                foreach (GameObject unlockedSlot in unlockedSlots)
                 {
-                    getItem.transform.SetParent(ActiveSlot.transform);
-                    getItem.transform.localPosition = Vector3.zero;
-                    isCarryingItem = false;
-                }
-                else if (equipmentSlot.isEquip) //SwapItem
-                {
-                    InventoryItem itemEquip = equipmentSlot.GetComponentInChildren<InventoryItem>();
-                    itemEquip.transform.SetParent(ActiveSlot.transform);
-                    itemEquip.transform.localPosition = Vector3.zero;
-                    getItem.transform.SetParent(equipmentSlot.transform);
-                    getItem.transform.localPosition = Vector3.zero;
-                    equipmentSlot.ShowCannotEquip();
+                    InventorySlot slot = unlockedSlot.GetComponent<InventorySlot>();
+                    if (slot.isEmpty)
+                    {
+                        getItem.transform.SetParent(slot.transform);
+                        getItem.transform.localPosition = Vector3.zero;
+                        isCarryingItem = false;
+                        slot.isEmpty = false;
+                        ActiveSlot.GetComponent<EquipmentSlot>().isEquip = false; //We cannot use "equipmentSlot" because it becomes null 
+                        ActiveSlot.GetComponent<EquipmentSlot>().ShowCannotEquip();
 
-                    //Update the database
-                    InventoryData.RemoveItemData(InventoryData.equipmentData, itemEquip.data.ID);
-                    InventoryData.AddInventoryData(itemEquip.data);
+                        InventoryData.RemoveEquipmentData(getItem.data.ID);
+                        InventoryData.AddInventoryData(getItem.data);
 
-                    InventoryData.RemoveItemData(InventoryData.inventoryData, getItem.data.ID);
-                    InventoryData.AddEquipmentData(getItem.data);
+                        playerStat.RemoveItemStat(getItem);
 
-                    playerStat.RemoveItemStat(itemEquip);
-                    playerStat.AddItemStat(getItem);
-
-                    isCarryingItem = false;
-                }
-                else //Equip Item
-                {
-                    getItem.transform.SetParent(equipmentSlot.transform);
-                    getItem.transform.localPosition = Vector3.zero;
-                    equipmentSlot.isEquip = true;
-                    ActiveSlot.GetComponent<InventorySlot>().isEmpty = true;
-                    equipmentSlot.ShowCannotEquip();
-
-                    InventoryData.RemoveItemData(InventoryData.inventoryData, getItem.data.ID);
-                    InventoryData.AddEquipmentData(getItem.data);
-
-                    playerStat.AddItemStat(getItem);
-
-                    isCarryingItem = false;
+                        break;
+                    }
                 }
             }
-            //Case 2: Item taken from Equipment Slot 
+            //-----Step 2: Rearrange the inventory => The item will go to the last Empty Slot then we rearrange the Inventory based on Type => Rarity => Name
+            //// Later Update
             else
             {
-                if(is_rectTransformsOverlap(customCursor.GetComponent<RectTransform>(), inventoryRect.GetComponent<RectTransform>()))
-                {
-                    //-----Step 1: Put item into nearest Slot that is Empty
-                    foreach (GameObject emptySlot in emptySlots)
-                    {
-                        InventorySlot slot = emptySlot.GetComponent<InventorySlot>();
-                        if (slot.isEmpty)
-                        {
-                            getItem.transform.SetParent(slot.transform);
-                            getItem.transform.localPosition = Vector3.zero;
-                            isCarryingItem = false;
-                            slot.isEmpty = false;
-                            equipableSlot.isEquip = false; //We cannot use "equipmentSlot" because it becomes null 
-                            equipableSlot.ShowCannotEquip();
-
-                            InventoryData.RemoveItemData(InventoryData.equipmentData, getItem.data.ID);
-                            InventoryData.AddInventoryData(getItem.data);
-
-                            playerStat.RemoveItemStat(getItem);
-
-                            break;
-                        }
-                    }
-                    
-                    //-----Step 2: Rearrange the inventory => The item will go to the last Empty Slot then we rearrange the Inventory based on Type => Rarity => Name
-                    //// Later Update
-                }
-                else
-                {
-                    //----The Item will go back to the Equipment Slot
-                    getItem.transform.SetParent(equipableSlot.transform);
-                    getItem.transform.localPosition = Vector3.zero;
-                    isCarryingItem = false;
-                    equipableSlot.isEquip = true; //We cannot use "equipmentSlot" because it becomes null 
-                    equipableSlot.ShowCannotEquip();
-                }
-
+                //----The Item will go back to the Equipment Slot
+                getItem.transform.SetParent(ActiveSlot.transform);
+                getItem.transform.localPosition = Vector3.zero;
+                isCarryingItem = false;
             }
         }
     }
-
     //You should read this part, which I explain how to check the rect transform that is overlapped by other rect transform 
     //Therefore, when I take the item nearby the inventory, I can drop it. 
     public bool is_rectTransformsOverlap(RectTransform elem, RectTransform viewport)
@@ -446,7 +467,7 @@ public class InventoryManager : Singleton<InventoryManager>
 
          */
 
-    viewportMinCorner = v_wcorners[0]; //Bot Left
+        viewportMinCorner = v_wcorners[0]; //Bot Left
         viewportMaxCorner = v_wcorners[2]; //Top Right
 
         // Each Rect will have 4 corners => use positions of these corners to address the problem
@@ -564,45 +585,63 @@ public class InventoryManager : Singleton<InventoryManager>
     }
     public void AddAmountOfItem(ItemBase.ItemData data, int amount)
     {
-        foreach (GameObject emptySlot in emptySlots)
+        bool newItem = false;
+        if (data.info.prop.countable)
         {
-            InventorySlot slot = emptySlot.GetComponent<InventorySlot>();
-            if (slot.isEmpty)
+            if (InventoryData.GetAmount(data.info) == 0)
             {
-                GameObject itemAdd = Instantiate(ItemPrefab, transform.position, Quaternion.identity);
-
-                itemAdd.transform.SetParent(emptySlot.transform);
-                itemAdd.transform.SetSiblingIndex(4); //If it is the last => it will be faded
-                itemAdd.transform.localPosition = new Vector3(0, 0, 0);
-                slot.isEmpty = false;
-
-                //Initialize data for new item => Fix in the future because it should be init in shop system/craft/gacha.
-                //Means it should be initialized when the item was created, not when add to inventory.
-                InventoryItem item = itemAdd.GetComponent<InventoryItem>();
-                item.data.ID = GenerateID();
-                item.data.info = data.info;
-                item.data.amount += amount;
-                item.data.currentStat = data.info.baseStat.stats;
-
-                //Add data to database
-                InventoryData.AddInventoryData(item.data);
-
-                if (data.info.prop.countable)
-                {
-                    slot.countText.text = InventoryData.GetAmount(data.info).ToString();
-                }
-                break;
+                newItem = true;
             }
-            else if (data.info.prop.countable) //If slot is not empty and item is countable
+            else
             {
-                InventoryItem item = slot.GetComponentInChildren<InventoryItem>();
-                if (item.data.info.prop.itemName == data.info.prop.itemName)
+                foreach (GameObject unlockedSlot in unlockedSlots)
                 {
+                    InventorySlot slot = unlockedSlot.GetComponent<InventorySlot>();
+                    if (!slot.isEmpty)
+                    {
+                        InventoryItem item = unlockedSlot.GetComponentInChildren<InventoryItem>();
+                        if (item.data.info == data.info)
+                        {
+                            item.data.amount += amount;
+                            //Add data to database
+                            InventoryData.AddInventoryData(item.data);
+
+                            slot.countText.text = item.data.amount.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (!data.info.prop.countable || newItem == true)
+        {
+            foreach (GameObject unlockedSlot in unlockedSlots)
+            {
+                InventorySlot slot = unlockedSlot.GetComponent<InventorySlot>();
+                if (slot.isEmpty)
+                {
+                    GameObject itemAdd = Instantiate(ItemPrefab, transform.position, Quaternion.identity);
+
+                    itemAdd.transform.SetParent(unlockedSlot.transform);
+                    itemAdd.transform.SetSiblingIndex(4);   
+                    itemAdd.transform.localPosition = new Vector3(0, 0, 0);
+                    slot.isEmpty = false;
+
+                    //Initialize data for new item => Fix in the future because it should be init in shop system/craft/gacha.
+                    //Means it should be initialized when the item was created, not when add to inventory.
+                    InventoryItem item = itemAdd.GetComponent<InventoryItem>();
+                    item.data.ID = GenerateID();
+                    item.data.info = data.info;
                     item.data.amount += amount;
+                    item.data.currentStat = data.info.baseStat.stats;
+
                     //Add data to database
                     InventoryData.AddInventoryData(item.data);
 
-                    slot.countText.text = item.data.amount.ToString();
+                    if (data.info.prop.countable)
+                    {
+                        slot.countText.text = item.data.amount.ToString();
+                    }
                     break;
                 }
             }
@@ -610,10 +649,10 @@ public class InventoryManager : Singleton<InventoryManager>
     }
     public void RemoveAmountOfItem(ItemInfo info, int amount)
     {
-        foreach (GameObject emptySlot in emptySlots)
+        foreach (GameObject unlockedSlot in unlockedSlots)
         {
-            InventorySlot slot = emptySlot.GetComponent<InventorySlot>();
-            InventoryItem item = emptySlot.GetComponentInChildren<InventoryItem>();
+            InventorySlot slot = unlockedSlot.GetComponent<InventorySlot>();
+            InventoryItem item = unlockedSlot.GetComponentInChildren<InventoryItem>();
             if (item != null)
             {
                 if (item.data.info.prop.itemName == info.prop.itemName)
@@ -622,7 +661,7 @@ public class InventoryManager : Singleton<InventoryManager>
 
                     if (item.data.amount == 0)
                     {
-                        InventoryData.RemoveItemData(InventoryData.inventoryData, item.data.ID);
+                        InventoryData.RemoveInventoryData(item.data.ID);
                         slot.DestroyItem();
                     }
                     else if (item.data.amount > 0)
@@ -636,14 +675,19 @@ public class InventoryManager : Singleton<InventoryManager>
             }
         }
     }
+
+    /// <summary>
+    /// Permanently delete the item. Means it is no longer saved in data.
+    /// </summary>
     public void DeleteItem()
     {
         InventorySlot activeSlot = ActiveSlot.GetComponent<InventorySlot>();
         if (!activeSlot.isEmpty)
         {
-            InventoryData.RemoveItemData(InventoryData.inventoryData, activeSlot.GetComponentInChildren<InventoryItem>().data.ID);
+            InventoryData.RemoveInventoryData(activeSlot.GetComponentInChildren<InventoryItem>().data.ID);
             activeSlot.DestroyItem();
         }
+
     }
     public int GenerateID()
     {
@@ -659,11 +703,15 @@ public class InventoryManager : Singleton<InventoryManager>
         return randNum;
     }
 
+
+    /// <summary>
+    /// Get the amount of the item.
+    /// </summary>
     public int GetAmountOfItem(ItemInfo info)
     {
-        foreach (GameObject emptySlot in emptySlots)
+        foreach (GameObject unlockedSlot in unlockedSlots)
         {
-            InventoryItem item = emptySlot.GetComponentInChildren<InventoryItem>();
+            InventoryItem item = unlockedSlot.GetComponentInChildren<InventoryItem>();
             if (item != null)
             {
                 if (item.data.info.prop.itemName == info.prop.itemName)
@@ -674,63 +722,113 @@ public class InventoryManager : Singleton<InventoryManager>
         }
         return 0;
     }
-    public void InitializeInventoryItemFromData(ItemBase.ItemData data) //Similar to AddItem, just remove the line AddItemData. 
+
+
+    /// <summary>
+    /// Initilize inventory item from data.
+    /// </summary>
+    public void InitializeInventoryItemFromData(int itemType)
     {
-        foreach (GameObject emptySlot in emptySlots)
+        if (InventoryData.inventoryData.Count == 0)
         {
-            InventorySlot slot = emptySlot.GetComponent<InventorySlot>();
-            if (slot.isEmpty)
+            return;
+        }
+        RemoveAllItem();
+        foreach (ItemBase.ItemData data in InventoryData.inventoryData)
+        {
+            if (itemType == 0
+                || itemType == 7 && (int)data.info.baseStat.type < itemType
+                || (int)data.info.baseStat.type == itemType)
             {
-                GameObject itemAdd = Instantiate(ItemPrefab, transform.position, Quaternion.identity);
-
-                itemAdd.transform.SetParent(emptySlot.transform);
-                itemAdd.transform.SetSiblingIndex(4); //If it is the last => it will be faded
-                itemAdd.transform.localPosition = new Vector3(0, 0, 0);
-                slot.isEmpty = false;
-
-                InventoryItem item = itemAdd.GetComponent<InventoryItem>();
-                item.data = data;
-
-
-                if (data.info.prop.countable)
+                foreach (GameObject unlockedSlot in unlockedSlots)
                 {
-                    slot.countText.text = InventoryData.GetAmount(data.info).ToString();
-                    
+                    InventorySlot slot = unlockedSlot.GetComponent<InventorySlot>();
+                    if (slot.isEmpty)
+                    {
+                        GameObject itemAdd = Instantiate(ItemPrefab, transform.position, Quaternion.identity);
+
+                        itemAdd.transform.SetParent(unlockedSlot.transform);
+                        itemAdd.transform.SetSiblingIndex(4); //If it is the last => count text will be faded
+                        itemAdd.transform.localPosition = new Vector3(0, 0, 0);
+                        slot.isEmpty = false;
+
+                        InventoryItem item = itemAdd.GetComponent<InventoryItem>();
+                        item.data = data;
+
+
+                        if (data.info.prop.countable)
+                        {
+                            slot.countText.text = InventoryData.GetAmount(data.info).ToString();
+
+                        }
+                        break;
+                    }
                 }
-                break;
             }
         }
     }
-    public void InitializeEquippedItemFromData(ItemBase.ItemData data)
+    public void InitializeEquippedItemFromData()
     {
-        foreach (EquipmentSlot slot in equipmentSlots)
+        if (InventoryData.equipmentData.Count == 0)
         {
-            if (slot.type == data.info.baseStat.type)
+            return;
+        }
+
+        foreach (ItemBase.ItemData data in InventoryData.equipmentData)
+        {
+            foreach (EquipmentSlot slot in equipmentSlots)
             {
-                GameObject itemAdd = Instantiate(ItemPrefab, transform.position, Quaternion.identity);
-                itemAdd.transform.SetParent(slot.transform);
-                itemAdd.transform.localPosition = Vector3.zero;
+                if (slot.type == data.info.baseStat.type)
+                {
+                    GameObject itemAdd = Instantiate(ItemPrefab, transform.position, Quaternion.identity);
+                    itemAdd.transform.SetParent(slot.transform);
+                    itemAdd.transform.localPosition = Vector3.zero;
 
-                InventoryItem item = itemAdd.GetComponent<InventoryItem>();
-                item.data = data;
+                    InventoryItem item = itemAdd.GetComponent<InventoryItem>();
+                    item.data = data;
 
-                slot.isEquip = true;
+                    slot.isEquip = true;
+                }
             }
         }
     }
+
+    /// <summary>
+    /// Just remove all items from the inventory, but not remove it from data.
+    /// </summary>
+    public void RemoveAllItem()
+    {
+        foreach (GameObject unlockedSlot in unlockedSlots)
+        {
+            InventorySlot slot = unlockedSlot.GetComponent<InventorySlot>();
+            if (!slot.isEmpty)
+            {
+                slot.DestroyItem();
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// Rearrange the inventory.
+    /// </summary>
     public void RearrangeItem()
     {
 
     }
 
 
+    /// <summary>
+    /// Exit the game.
+    /// </summary>
     public void QuitGame()
     {
         Application.Quit();
     }
+
+
     public void OnApplicationQuit()
     {
-        // Save any unsaved data here
         DataInventory.SaveData(InventoryData);
     }
 }

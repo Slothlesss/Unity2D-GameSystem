@@ -9,7 +9,6 @@ public class InventorySlot : MonoBehaviour
 {
     public bool isEmpty;
     public bool isLocked;
-    public int index;
     public GameObject lockObject;
     public Toggle Toggle;
     public TextMeshProUGUI countText;
@@ -31,20 +30,20 @@ public class InventorySlot : MonoBehaviour
         }
     }
 
-    public void CountText(bool bl)
+    public void DisplayCountText(bool bl)
     {
         countText.gameObject.SetActive(bl);
     }
 
-    public InventoryItem ItemType()
+    public InventoryItem GetItemType()
     {
         return GetComponentInChildren<InventoryItem>();
     }
 
     public void DestroyItem()
     {
-        isEmpty = true;
         countText.gameObject.SetActive(false);
-        Destroy(ItemType().gameObject);
+        Destroy(GetItemType().gameObject);
+        isEmpty = true;
     }
 }

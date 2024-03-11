@@ -19,6 +19,7 @@ public class CraftSlot : MonoBehaviour
     public void ShowRequirement(int currentAmount, int requireAmount, ItemInfo info)
     {
         item.gameObject.SetActive(true);
+        lockIcon.SetActive(false);
         item.data.info = info;
 
         amountText.text = currentAmount.ToString() + "/" + requireAmount.ToString();
@@ -30,6 +31,5 @@ public class CraftSlot : MonoBehaviour
         {
             amountText.color = Color.white;
         }
-        lockIcon.SetActive(false);
     }
 }

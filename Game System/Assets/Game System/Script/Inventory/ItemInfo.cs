@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 [CreateAssetMenu(fileName = "new Item", menuName = "Equipment")]
 public class ItemInfo : ScriptableObject
 {
-
     [System.Serializable]
     public class ItemProperties
     {
@@ -17,13 +13,12 @@ public class ItemInfo : ScriptableObject
         public string specialStat;
         [TextArea(3, 3)]
         public string itemDescription;
-        
     }
     [System.Serializable]
     public class ItemStat
     {
-        public ItemManager.ItemType type;
-        public ItemManager.Rarity rarity;
+        public ItemType type;
+        public Rarity rarity;
         public int requiredLevel = 1;
         [SerializeField]
         public Stat[] stats;
@@ -31,12 +26,12 @@ public class ItemInfo : ScriptableObject
         [System.Serializable]
         public class Stat
         {
-            public ItemManager.StatType type;
+            public StatType type;
             public float value;
 
             public float GetNextValue()
             {
-                if (type == ItemManager.StatType.AttackRange || type == ItemManager.StatType.AttackSpeed)
+                if (type == StatType.AttackRange || type == StatType.AttackSpeed)
                 {
                     return value;
                 }

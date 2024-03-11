@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 public class ShopManager : MonoBehaviour
 {
-    public enum Currency { Gold, Diamond }
     public PlayerStat playerStat;
 
     [SerializeField] TextMeshProUGUI diamondText;
@@ -84,7 +83,7 @@ public class ShopManager : MonoBehaviour
     {
         if (item.Attempt < item.maxAttempt)
         {
-            if (item.data.info.baseStat.type != ItemManager.ItemType.Currency) //If item is not Gold or Diamond
+            if (item.data.info.baseStat.type != ItemType.Currency) //If item is not Gold or Diamond
             {
                 if (item.typeCurrency == Currency.Gold && Gold >= item.price)
                 {

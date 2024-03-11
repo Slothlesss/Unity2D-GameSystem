@@ -27,13 +27,17 @@ public class UpgradeManager : MonoBehaviour
         }
 
         upgradeSystemButton.onValueChanged.AddListener(delegate {
-            GetEquipItem();
+            ShowEquipItem();
             UndisplayItem();
         });
 
     }
 
-    private void GetEquipItem()
+
+    /// <summary>
+    /// Display all equiped items in display-item field.
+    /// </summary>
+    private void ShowEquipItem()
     {
         for(int i = 0; i < 6; i++)
         {
@@ -49,7 +53,7 @@ public class UpgradeManager : MonoBehaviour
             }
         }
 
-        // Question: Why we need upgradeItem.data become null when starting?
+        // Question: Why do we need upgradeItem.data become null when starting?
         // Answer: If you upgrade the first sword, then you swap another sword
         //         Then you go to upgrade system, but not click to any item, click to "upgrade button" => it keeps upgrading the old item
         //         Because the upgradeItem didn't reset.
@@ -57,6 +61,10 @@ public class UpgradeManager : MonoBehaviour
         upgradeItem.data = null;
     }
 
+
+    /// <summary>
+    /// Display the item that is clicked.
+    /// </summary>
     public void DisplayItem(int idx)
     {
         currentIdx = idx;
@@ -90,8 +98,6 @@ public class UpgradeManager : MonoBehaviour
      */
     public void UpgradeItem()
     {
-        
-
         if (!equipItems[currentIdx].gameObject.activeInHierarchy || upgradeItem.data == null)
         {
             return;
@@ -109,6 +115,11 @@ public class UpgradeManager : MonoBehaviour
         DisplayUpgradeCurrentStat();
         DisplayUpgradeStatPreview();
     }
+
+
+    /// <summary>
+    /// Display description of the current stats in text.
+    /// </summary>
     private void DisplayUpgradeCurrentStat()
     {
         int len = upgradeItem.data.currentStat.Length;
@@ -123,6 +134,11 @@ public class UpgradeManager : MonoBehaviour
             currentStatTexts[i].gameObject.SetActive(false);
         }
     }
+
+
+    /// <summary>
+    /// Display description of the previewed stats in text.
+    /// </summary>
     private void DisplayUpgradeStatPreview()
     {
         previewItem.data.currentLevel = upgradeItem.data.currentLevel + 1;
@@ -154,6 +170,10 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Hide UI of the upgrade item.
+    /// </summary>
     private void UndisplayItem()
     {
         upgradeItem.gameObject.SetActive(false);

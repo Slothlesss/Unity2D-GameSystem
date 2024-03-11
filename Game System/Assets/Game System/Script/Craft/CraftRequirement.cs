@@ -10,26 +10,20 @@ public class CraftRequirement : MonoBehaviour
         public ItemInfo info;
         public int amount;
     }
-
     public GameObject craftSlotPool;
     public CraftSlot[] craftSlots;
     public GameObject resultSlot;
     public RequireMaterial[] requireMaterial;
     public ItemInfo resultItem;
-
     public int numMeetRequirement;
 
 
     private InventoryItem item;
     private void OnEnable()
     {
-
         craftSlots = craftSlotPool.GetComponentsInChildren<CraftSlot>();
-
         item = resultSlot.GetComponent<InventoryItem>();
         item.data.info = resultItem; //Update the image of result
-        
-
         UpdateCraftSlot();
     }
 

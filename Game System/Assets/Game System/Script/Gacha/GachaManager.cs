@@ -18,15 +18,16 @@ public class GachaManager : MonoBehaviour
 
     GameObject[] rewardGOs = new GameObject[10];
 
+    /* Question: Why don't we use the On Click(), which is function of Button, in the Inspector?
+     * Answer: Put everything in the code will be easy to manage => U should use onClick.AddListener().
+     *        You can see that we immediately know that we have 2 buttons for this system. Instead of searching them in the hierachy.
+
+     * Question: Why put it in Awake() but not Start()?
+     * Answer: Later, when you use Event, all the event will be put in the Awake(), which happens before Start().
+     *         If you put onClick.AddListener() in Start(), there will be a chance that it miss the event.
+     */
     private void Awake()
     {
-        //Question: Why don't we use the On Click(), which is function of Button, in the Inspector?
-        //Answer: Put everything in the code will be easy to manage => U should use onClick.AddListener().
-        //        You can see that we immediately know that we have 2 buttons for this system. Instead of searching them in the hierachy.
-
-        //Question: Why put it in Awake() but not Start()?
-        //Answer: Later, when you use Event, all the event will be put in the Awake(), which happens before Start().
-        //        If you put onClick.AddListener() in Start(), there will be a chance that it miss the event.
         
         oneTimeButton.onClick.AddListener(() =>
         {

@@ -25,6 +25,10 @@ public class CraftManager : MonoBehaviour
         DisplayMenu(0);
         currentMenu = 0;
     }
+
+    /// <summary>
+    /// Display chosen craft menu.
+    /// </summary>
     public void DisplayMenu(int idx)
     {
         foreach (CraftRequirement craft in craftMenus)
@@ -35,6 +39,10 @@ public class CraftManager : MonoBehaviour
         currentMenu = idx;
     }
 
+
+    /// <summary>
+    /// Craft the item.
+    /// </summary>
     public void CraftItem()
     {
         if (craftMenus[currentMenu].CanCraft())

@@ -8,7 +8,7 @@ public class ShopItem : ItemBase
 {
     [SerializeField] Image currencyImage;
     public int price;
-    public ShopManager.Currency typeCurrency;
+    public Currency typeCurrency;
     public TextMeshProUGUI priceText;
 
     public int maxAttempt = 1;
@@ -28,11 +28,10 @@ public class ShopItem : ItemBase
     [SerializeField] TextMeshProUGUI attemptText;
 
     [SerializeField] Image buttonImage;
-    // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
-        if (typeCurrency == ShopManager.Currency.Gold)
+        if (typeCurrency == Currency.Gold)
         {
             currencyImage.sprite = ShopManager.Instance.currencySprites[0];
             price = base.data.info.baseStat.requiredLevel * 10 * base.SetPriceByRarity();
